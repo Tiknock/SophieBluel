@@ -1,0 +1,4 @@
+			<figure>
+				<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina"> ==> imageUrl
+				<figcaption>Abajour Tahina</figcaption>  ===> title
+			</figure>
