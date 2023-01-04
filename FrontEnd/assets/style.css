@@ -141,10 +141,10 @@ li:hover {
 	border-radius: 60px;
 	padding: 9px auto;
 }
-/* .btn-Sort:active {
+.active {
 	background: #1D6154;
 	color: #FFFEF8;
-} */
+}
 .gallery {
 	width: 100%;
 	display: grid;
@@ -155,40 +155,58 @@ li:hover {
 
 .gallery img {
 	width: 100%;
-
+}
+.gallery figcaption {
+	font-family: "Work Sans";
+	font-weight: 400;
+	font-size: 13px;
+	color: #3D3D3D;
+	margin-top: 5px;
 }
 #contact {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
-#contact > * {
+#contact > *, #login > *  {
 	text-align: center;
 
 }
 #contact h2{
 	margin-bottom: 20px;
 }
-#contact form {
+#contact form, #login form {
 	text-align: left;
 	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
 
-#contact input {
+#contact input, #login input {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	font-family: "Work Sans";
 }
-#contact label {
+#contact label, #login label {
 	margin: 2em 0 1em 0;
+	font-family: "Work Sans";
 }
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	font-family: "Work Sans";
 }
-
+#login a {
+	text-align: center;
+	color: black;
+	font-family: "Work Sans";
+}
+#login {
+	height: 90vh;
+	width: 325px;
+	margin: auto;
+}
 input[type="submit"]{
 	font-family: 'Syne';
 	font-weight: 700;

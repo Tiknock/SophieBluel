@@ -36,10 +36,16 @@ async function worksDisplay() {
 }
 worksDisplay()
 
-
 btnSort.forEach((btn) => {
     btn.addEventListener('click', (e) => {
         filterMethod = e.target.id;
+        // if (btnSort.id !== filterMethod) {
+        //     btn.classList -= " active";
+        //     console.log(btnSort.id)
+        // } else if ((btnSort.id == filterMethod)) {
+            btn.classList += " active";
+        // }
+        // btn.classList.remove(" active"); Enlever .active sur les autres boutons
         worksDisplay();
     });
 });
