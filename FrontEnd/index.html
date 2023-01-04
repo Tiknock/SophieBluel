@@ -15,8 +15,8 @@
 	<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
 	<nav>
 		<ul>
-			<li>projets</li>
-			<li>contact</li>
+			<li><a href="#portfolio">projets</a></li>
+			<li><a href="#contact">contact</a></li>
 			<li><a href="./login.html">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
@@ -36,6 +36,19 @@
 	</section>
 	<section id="portfolio">
 		<h2>Mes Projets</h2>
+		<!-- MODALE -->
+		<a href="#modal1" class="js-modal">modifier</a>
+
+    	<aside id="modal1" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="titlemodal" style="display:none">
+        	<div class="modal-wrapper">
+            	<h1 id="titlemodal">Galerie photo</h1>
+            	<div class="modal-gallery">
+            	</div>
+            	<input id="add-btn" type="submit" value="Ajouter une photo"><br>
+            	<a href="#">Supprimer la galerie</a>
+        	</div>
+    	</aside>
+		<!-- END OF THE MODALE -->
 		<div class="filter-container">
 			<button class="btn-Sort" id="0">Tous</button>
 			<button class="btn-Sort" id="1">Objets</button>
@@ -69,5 +82,6 @@
 	</nav>
 </footer>
 <script src="script.js"></script>
+<script src="/FrontEnd/modal/scriptmodal.js"></script>
 </body>
 </html>
