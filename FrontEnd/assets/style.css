@@ -49,6 +49,12 @@ table {
 	border-spacing: 0;
 }
 /** end reset css**/
+a {
+	text-decoration: none;
+}
+button, input[type="submit"] {
+	cursor: pointer;
+}
 body {
 	max-width: 1140px;
 	margin:auto;
@@ -86,6 +92,18 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+.js-modal  {
+	font-family: "Work Sans";
+	font-weight: 400;
+	font-size: 14px;
+	color: #000;
+}
+.js-modal:hover {
+	color: #B1663C;
+}
+.js-modal i {
+	margin-right: 8px;
+}
 nav ul {
 	display: flex;
 	align-items: center;
@@ -96,8 +114,10 @@ nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
 }
-
-li:hover {
+nav li a {
+	color: #000;
+}
+nav li a:hover {
 	color: #B1663C;
 }
 #introduction {
@@ -112,9 +132,18 @@ li:hover {
 	margin: auto;
 	width: 80%;
 }
+#click-modal1 {
+	display: block;
+	width: 80%;
+	margin: 15px auto;
+}
 
 #introduction article {
 	flex: 1
+}
+#click-modal2 {
+	display: block;
+	margin-bottom: 19px;
 }
 #introduction h2 {
 	margin-bottom: 1em;
@@ -123,9 +152,17 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
+.h2-edit {
+	position: relative;
+}
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
+}
+#click-modal3 {
+	position: absolute;
+	left: 60%;
+	top: 10px;
 }
 .filter-container {
 	margin: 50px auto;
@@ -176,21 +213,21 @@ li:hover {
 #contact h2{
 	margin-bottom: 20px;
 }
-#contact form, #login form {
+#contact form, #login form, #vue2 form {
 	text-align: left;
 	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
 
-#contact input, #login input {
+#contact input, #login input, #vue2 input, #vue2 select {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 	font-family: "Work Sans";
 }
-#contact label, #login label {
+#contact label, #login label, #vue2 label {
 	margin: 2em 0 1em 0;
 	font-family: "Work Sans";
 }
@@ -242,6 +279,7 @@ footer nav ul {
     text-align: center;
 }
 .modal-wrapper {
+	position: relative;
     border-radius: 10px;
     /* overflow: auto; */
     width: 600px;
@@ -250,12 +288,20 @@ footer nav ul {
     padding: 20px;
     background: #FFF;
 }
+.js-modal-close {
+	position: absolute;
+	right: 30px;
+	top: 30px;
+	border: none;
+	cursor: pointer;
+}
 #titlemodal {
-    margin-bottom: 46px;
+    margin: 60px auto 46px;
     text-align: center;
     font-family: "Work Sans";
     font-weight: 400;
     font-size: 26px;
+	color: #000;
 }
 .modal-gallery {
 	width: 80%;
@@ -266,6 +312,7 @@ footer nav ul {
 	grid-row-gap: 10px;
 }
 .modal-gallery figure {
+	position: relative;
     padding: 0;
     margin: 0;
     width: 77px;
@@ -276,11 +323,32 @@ footer nav ul {
     /* width: 100%; */
     object-fit: cover;
 }
-.modal-gallery p {
+.icons {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+}
+.fa-up-down-left-right {
+	visibility: hidden;
+}
+.modal-gallery figure:hover .fa-up-down-left-right {
+	visibility: visible;
+}
+.modal-gallery figure:hover {
+cursor: pointer;
+}
+.modal-gallery i {
+	padding: 4px;
+	background: #000;
+	color: #FFF;
+	border-radius: 2px;
+}
+.edit-item {
     margin: 0;
     font-family: "Work Sans";
     font-weight: 400;
     font-size: 12px;
+	color: #000;
 }
 input[type="submit"]{
 	font-family: 'Syne';
@@ -295,10 +363,49 @@ input[type="submit"]{
 	text-align: center;
 	border-radius: 60px ;
 }
-.modal a {
+#delete-gallery {
     color: #D65353;
-    text-decoration: none;
     font-family: "Syne";
     font-weight: 400;
     font-size: 14px;
+}
+
+
+/* MODALE VUE2 */
+#vue2 {
+	z-index: 10;
+	display: flex;
+	flex-direction: column;
+}
+.js-modal-previous {
+	position: absolute;
+	top: 30px;
+	left: 30px;
+	border: none;
+	cursor: pointer;
+}
+.pic-add {
+	display: flex;
+	flex-direction: column;
+	background: #E8F1F6; 
+	width: 80%;
+	height: 189px;
+	margin: auto;
+}
+#vue2 form {
+	display: flex;
+	flex-direction: column;
+	width: 80%;
+	margin: auto;
+}
+#vue2 span {
+	margin: 47px auto;
+	background: #B3B3B3;
+	height: 1px;
+	width: 100%;
+}
+#add-picture-btn {
+	color: #FFF;
+	background: #A7A7A7;
+	border: 1px solid #A7A7A7;
 }
