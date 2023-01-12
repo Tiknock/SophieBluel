@@ -1,4 +1,4 @@
-const loginAPI = "http://localhost:5678/api/users/login";
+const loginURL = "http://localhost:5678/api/users/login";
 const form = document.getElementById("login-form");
 const loginBtn = document.getElementById('login-btn');
 
@@ -19,7 +19,7 @@ function showErrorMsg() {
 loginBtn.addEventListener('click', function(e) {
     e.preventDefault();
     let user = getUserLog();
-    fetch(loginAPI, {
+    fetch(loginURL, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'

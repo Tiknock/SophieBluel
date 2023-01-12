@@ -1,37 +1,78 @@
+const vue1 = document.getElementById('vue1')
+const vue2 = document.getElementById('vue2')
+const modal3 = document.getElementById('modal3')
 let modal = null;
 let item;
 
-const openModal = function (e) {
-    e.preventDefault();
-    const target = document.querySelector(e.target.getAttribute('href'));
-    target.style.display = null;
-    target.removeAttribute('aria-hidden')
-    target.setAttribute('aria-modal', "true")
-    modal = target
-    modal.addEventListener('click', closeModal)
-    modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
-    modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
+const openVue1 = function () {
+    modal = "modal3"
+
+    modal3.style.display = null;
+    modal3.removeAttribute('aria-hidden')
+    modal3.setAttribute('aria-modal', "true")
+
+    vue1.style.display = null;
+    vue1.removeAttribute('aria-hidden')
+    vue1.setAttribute('aria-modal', "true")
+    
+    if (vue2.style.display = "none") {
+        modal3.addEventListener('click', closeModal)
+        modal3.querySelector('.js-modal-close').addEventListener('click', closeModal)
+        document.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
+    }
+}
+const openVue2 = function () {
+    vue1.style.display = "none";
+    vue1.setAttribute('aria-hidden', "true")
+    vue1.removeAttribute('aria-modal')
+
+    vue2.style.display = null;
+    vue2.removeAttribute('aria-hidden')
+    vue2.setAttribute('aria-modal', "true")
+
+
+    vue2.addEventListener('click', closeModal)
+    vue2.querySelector('.js-modal-close').addEventListener('click', closeModal)
+    document.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
+    modal = "vue2"
 }
 
 const closeModal = function (e) {
-    if (modal === null) return
+    console.log("close :" + modal);
     e.preventDefault();
-    modal.style.display = "none";
-    modal.setAttribute('aria-hidden', 'true')
-    target.removeAttribute('aria-modal')
-    modal.removeEventListener('click', closeModal)
-    modal.querySelector('.js-modal-close').removeEventListener('click', closeModal)
-    modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
-    modal = null
+    modal3.style.display = "none";
+    modal3.setAttribute('aria-hidden', 'true')
+    modal3.removeAttribute('aria-modal')
+    document.removeEventListener('click', closeModal)
+    document.querySelector('.js-modal-close').removeEventListener('click', closeModal)
+    document.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
 }
 
 const stopPropagation = function (e) {
+    console.log("propa :" + e.target );
     e.stopPropagation()
 }
 
 document.querySelectorAll('.js-modal').forEach(a => {
-    a.addEventListener('click', openModal)
+    a.addEventListener('click', (e) => {
+        if (e.target.getAttribute('href') == "#modal3"){
+            openVue1()
+        }
+        else if (e.target.getAttribute('href') == "#vue2") {
+            openVue2()
+        }
+    })
 })
+const previousModal = function(e) {
+    openVue1()
+}
+document.querySelector(".js-modal-previous").addEventListener("click", (e) => previousModal)
+
+
+
+
+
+
 
 
 const modalGallery = document.querySelector('.modal-gallery');
@@ -40,7 +81,7 @@ async function getWorks() {
     await fetch("http://localhost:5678/api/works")
         .then((res) => res.json())
         .then((data) => works = data)
-        console.log(works);
+        // console.log(works);
     }
 
 async function worksDisplay() {

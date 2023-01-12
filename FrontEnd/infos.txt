@@ -70,3 +70,14 @@ VUE2 :
 	
 
 	=> .active
+
+
+
+
+	Est-ce qu'on ne peut pas changer la vue grâce à .modal-wrapper plus que par aside ?
+
+
+
+
+
+	Essayer de faire a href sur la vue 1 et de déplier la modal3 en même temps (en gros vue1 prio)

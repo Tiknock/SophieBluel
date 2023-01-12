@@ -295,7 +295,7 @@ footer nav ul {
 	border: none;
 	cursor: pointer;
 }
-#titlemodal {
+.titlemodal {
     margin: 60px auto 46px;
     text-align: center;
     font-family: "Work Sans";
@@ -317,7 +317,7 @@ footer nav ul {
     margin: 0;
     width: 77px;
 }
-.modal-gallery img {
+.modal-gallery-img {
     width: 77px;
     /* height: 104px; */
     /* width: 100%; */
@@ -350,7 +350,11 @@ cursor: pointer;
     font-size: 12px;
 	color: #000;
 }
-input[type="submit"]{
+.modal-gallery-btn {
+	display: flex;
+	flex-direction: column;
+}
+#add-btn, input[type="submit"]{
 	font-family: 'Syne';
 	font-weight: 700;
     font-size: 14px;
@@ -361,7 +365,7 @@ input[type="submit"]{
 	margin : 2em auto 30px ;
 	width: auto;
 	text-align: center;
-	border-radius: 60px ;
+	border-radius: 60px;
 }
 #delete-gallery {
     color: #D65353;
@@ -392,14 +396,29 @@ input[type="submit"]{
 	height: 189px;
 	margin: auto;
 }
+.pic-add i {
+	height: 70%;
+}
+.pic-add button {
+	width: 50%;
+	margin: auto;
+	border-radius: 50px;
+	font-family: "Work Sans";
+	font-weight: 500;
+	font-size: 14px;
+	background: #CBD6DC;
+	color: #306685;
+	padding: 10px 33px;
+	border: #CBD6DC;
+}
 #vue2 form {
 	display: flex;
 	flex-direction: column;
 	width: 80%;
 	margin: auto;
 }
-#vue2 span {
-	margin: 47px auto;
+.line {
+	margin: 47px auto 32px;
 	background: #B3B3B3;
 	height: 1px;
 	width: 100%;
@@ -408,4 +427,9 @@ input[type="submit"]{
 	color: #FFF;
 	background: #A7A7A7;
 	border: 1px solid #A7A7A7;
+	width: 50%;
+}
+.flex {
+	display: flex;
+	flex-direction: column;
 }
