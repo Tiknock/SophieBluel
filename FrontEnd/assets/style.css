@@ -52,7 +52,7 @@ table {
 a {
 	text-decoration: none;
 }
-.p-add, button, input[type="submit"] {
+button, input[type="submit"] {
 	cursor: pointer;
 }
 body {
@@ -388,15 +388,19 @@ cursor: pointer;
 	border: none;
 	cursor: pointer;
 }
-.pic-add {
+.img-area {
+	position: relative;
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	background: #E8F1F6; 
-	width: 70%;
+	overflow: hidden;
+	width: 100%;
 	height: 189px;
 	margin: auto;
 }
-.pic-add i {
+.img-area i {
 	height: 70%;
     font-size: 4em;
     color: #CBD6DC;
@@ -404,8 +408,38 @@ cursor: pointer;
     align-items: center;
     justify-content: center;
 }
-.p-add {
-	width: 50%;
+.img-add {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 100;
+}
+.img-area::before {
+	content: attr(data-img);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	color: #FFF;
+	font-weight: 500;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	pointer-events: none;
+	opacity: 0;
+	z-index: 200;
+}
+.img-area.active:hover::before {
+	opacity: 1;
+}
+.select-image {
+	width: 30%;
 	margin: auto;
 	border-radius: 50px;
 	font-family: "Work Sans";

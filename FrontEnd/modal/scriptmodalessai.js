@@ -96,19 +96,20 @@ const page = {
         modal.querySelector(".content").className += " vue2";
         utils.pageContent(
             "Ajout photo",
-            `<div class="pic-add">
-                <label for="file">
+            `
+            <input type="file" id="file" accept="image/*" hidden>
+            <div class="img-area" data-img="">
                 <i class="fa-regular fa-image"></i>
-                <p class="p-add">+ Ajouter photo</p>
-                <input type="file" style="visibility:hidden" id="file" name="avatar" accept="image/png, image/jpeg">
                 </label>
+                <input type="file" style="visibility:hidden" id="file" name="avatar" accept="image/png, image/jpeg" required>
+                <button class="select-image">+ Ajouter photo</button>
                 <p>jpg, png: 4mo max</p>
             </div>
             <form id="add-form" action="#" method="post">
                 <label for="title">Titre</label>
-                <input type="text" name="title" id="title">
+                <input type="text" name="title" id="title" required>
                 <label for="category">Catégorie</label>
-                <select name="category" id="category">
+                <select name="category" id="category" required>
                     <option value="">--Choisir la catégorie--</option>
                     <option value="1">Objets</option>
                     <option value="2">Appartements</option>
@@ -119,7 +120,8 @@ const page = {
             </form>`,
                 null
         )
-        modal.querySelector("#file").addEventListener('click', () => addPicture())
+ 
+        addPicture()
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
     // finish: function() {
@@ -211,25 +213,32 @@ function clickTrash() {
 // ADD WORK
     // ADD PICTURE
 
-function addPicture() {
-    console.log("addPic");
-    function handleSubmit () {
-        console.log("youpi");
-        if (!file.value.length) return;
-        console.log("part2");
-        let reader = new FileReader();
-        reader.onload = logFile;
-        reader.readAsDataURL(file.files[0]);
+    function addPicture() {
+        const selectImage = document.querySelector(".select-image")
+        const inputFile = document.querySelector("#file")
+        const imgArea = document.querySelector('.img-area')
+        
+    selectImage.addEventListener('click', () => {
+        inputFile.click();
+    })
+
+        inputFile.addEventListener('change', function () {
+            const image = this.files[0]
+            console.log(image);
+            const reader = new FileReader()
+            reader.onload = function () {
+                console.log("yes");
+                const imgUrl = reader.result;
+                let img = document.createElement('img');
+                img.src = imgUrl;
+                console.log(img);
+                console.log(reader);
+                imgArea.appendChild(img)
+                imgArea.className += ' active'
+                imgArea.dataset.img = image.name
+                img.className += ' img-add'
+                console.log("finito");
+            }
+            reader.readAsDataURL(image)
+        })
     }
-          
-    function logFile (e) {
-        const picAdd = modal.querySelector(".pic-add")
-        console.log("logFile");
-        let str = e.target.result;
-        let img = document.createElement('img');
-        img.src = str;
-        picAdd.append(img);
-        console.log(str);
-    }
-    handleSubmit()
-}
