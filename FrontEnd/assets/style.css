@@ -52,7 +52,7 @@ table {
 a {
 	text-decoration: none;
 }
-button, input[type="submit"] {
+.p-add, button, input[type="submit"] {
 	cursor: pointer;
 }
 body {
@@ -213,21 +213,21 @@ nav li a:hover {
 #contact h2{
 	margin-bottom: 20px;
 }
-#contact form, #login form, #vue2 form {
+#contact form, #login form, .vue2 form {
 	text-align: left;
 	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
 
-#contact input, #login input, #vue2 input, #vue2 select {
+#contact input, #login input, .vue2 input, .vue2 select {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 	font-family: "Work Sans";
 }
-#contact label, #login label, #vue2 label {
+#contact label, #login label, .vue2 label {
 	margin: 2em 0 1em 0;
 	font-family: "Work Sans";
 }
@@ -376,7 +376,7 @@ cursor: pointer;
 
 
 /* MODALE VUE2 */
-#vue2 {
+.vue2 {
 	z-index: 10;
 	display: flex;
 	flex-direction: column;
@@ -392,14 +392,19 @@ cursor: pointer;
 	display: flex;
 	flex-direction: column;
 	background: #E8F1F6; 
-	width: 80%;
+	width: 70%;
 	height: 189px;
 	margin: auto;
 }
 .pic-add i {
 	height: 70%;
+    font-size: 4em;
+    color: #CBD6DC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.pic-add button {
+.p-add {
 	width: 50%;
 	margin: auto;
 	border-radius: 50px;
@@ -411,14 +416,14 @@ cursor: pointer;
 	padding: 10px 33px;
 	border: #CBD6DC;
 }
-#vue2 form {
+.vue2 form {
 	display: flex;
 	flex-direction: column;
-	width: 80%;
+	width: 70%;
 	margin: auto;
 }
 .line {
-	margin: 47px auto 32px;
+	margin: 23px auto 10px;
 	background: #B3B3B3;
 	height: 1px;
 	width: 100%;

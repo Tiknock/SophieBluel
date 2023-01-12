@@ -1,19 +1,22 @@
+const worksURL = "http://localhost:5678/api/works";
+const bearer = `Bearer "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTg3NDkzOSwiZXhwIjoxNjUxOTYxMzM5fQ.JGN1p8YIfR-M-5eQ-Ypy6Ima5cKA4VbfL2xMr2MgHm4"`
+
 let modal = null;
 let item;
 let works = []
 
 async function getWorks() {
-    await fetch("http://localhost:5678/api/works")
+    await fetch(worksURL)
     .then((res) => res.json())
     .then((data) => works = data)
     .then(page.vue1())
-    console.log(works)
+    // console.log(works)
 }
 getWorks()
 const openModal = function (e) {
     // openVue2();
     // console.log("openModal");
-    console.log(works);
+    // console.log(works);
     e.preventDefault();
     // console.log(modal); // Note que #modal3 est modal donc ne ferme pas sinon tout est fermé (#vue1 et  #vue2)
     const target = document.querySelector(e.target.getAttribute('href'));
@@ -34,46 +37,71 @@ const utils = {
         modal.querySelector("h1").innerHTML = title;
         modal.querySelector(".content").innerHTML = content;
         modal.querySelector(".btn-container").innerHTML = btn;
-    }
+    },
+    // deleteItem: function() {
+    //     document.querySelectorAll('.deleteBtn').forEach((btn) => {
+    //         btn.addEventListener('click', (e) => {
+    //             // const newArr = exerciceArray.filter((exo) => 
+    //             //     exo.pic != e.target.dataset.pic
+    //             // );
+    //             // exerciceArray = newArr;
+    //             // page.vue1();
+    //         });
+    //     });
+    // },
+    // store: function() {
+    //     localStorage.exercices = JSON.stringify(exerciceArray);
+    // }
 }
 
 const page = {
     vue1: function() {
         // getWorks()
-        console.log(works);
+        // console.log(works);
+
+        modal.querySelector(".js-modal-previous").style.display = "none";
+        modal.querySelector(".btn-container").className += (" modal-gallery-btn");
         modal.querySelector(".content").className += " modal-gallery";
-        modal.querySelector(".btn-container").className += " modal-gallery-btn";
+        modal.querySelector(".content").classList.remove("vue2");
         let mapArray = works
         .map((work) => 
-         `
-            <figure draggable="true" data-draggable="item">
+        `
+        <figure draggable="true" data-draggable="item">
             <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
             <div class="icons">
             <i class="fa-solid fa-up-down-left-right"></i>
-            <i class="fa-solid fa-trash-can"></i>
+            <i class="fa-solid fa-trash-can deleteBtn" id="${work.id}"></i>
             </div>
             <a href="" class="edit-item">éditer</a>
             </figure>
-        `
+            `
             )
         .join("");       
         utils.pageContent(
             "Galerie photo",
             mapArray,
-            `<a href="#vue2" class="js-modal" id="add-btn">Ajouter une photo</a> 
+            `<button class="js-modal" id="add-btn">Ajouter une photo</button> 
             <a href="#" id="delete-gallery">Supprimer la galerie</a>`
-        );
-        // utils.handleEventArrow();
-        // utils.deleteItem();
-        // reboot.addEventListener('click', () => utils.reboot());
-        modal.getElementbyId("add-btn").addEventListener('click', () => this.vue2());
-    },
-    vue2: function() {
+            );
+            // utils.handleEventArrow();
+            // utils.deleteItem();
+            // reboot.addEventListener('click', () => utils.reboot());
+            clickTrash()
+            modal.querySelector("#add-btn").addEventListener('click', () => this.vue2());
+        },
+        vue2: function() {
+        modal.querySelector(".js-modal-previous").style.display = null;
+        modal.querySelector(".content").classList.remove("modal-gallery");
+        modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
+        modal.querySelector(".content").className += " vue2";
         utils.pageContent(
             "Ajout photo",
             `<div class="pic-add">
-                <i class="fa-thin fa-image"></i>
-                <button>+ Ajouter photo</button>
+                <label for="file">
+                <i class="fa-regular fa-image"></i>
+                <p class="p-add">+ Ajouter photo</p>
+                <input type="file" style="visibility:hidden" id="file" name="avatar" accept="image/png, image/jpeg">
+                </label>
                 <p>jpg, png: 4mo max</p>
             </div>
             <form id="add-form" action="#" method="post">
@@ -91,6 +119,8 @@ const page = {
             </form>`,
                 null
         )
+        modal.querySelector("#file").addEventListener('click', () => addPicture())
+        modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
     // finish: function() {
     //     utils.pageContent(
@@ -104,7 +134,7 @@ const page = {
 }
 
 const closeModal = function (e) {
-    console.log("closeModal");
+    // console.log("closeModal");
     if (modal === null) return
     e.preventDefault();
     modal.style.display = "none";
@@ -117,7 +147,7 @@ const closeModal = function (e) {
 }
 
 const stopPropagation = function (e) {
-    console.log("stopPropagation");
+    // console.log("stopPropagation");
     e.stopPropagation()
 }
 
@@ -151,3 +181,55 @@ document.querySelectorAll('.js-modal').forEach(a => {
 document.addEventListener('click', (e) => {
     console.log(e.target);
 })
+
+
+// DELETE 
+function clickTrash() {
+    modal.querySelectorAll('.deleteBtn')
+    .forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    let id = e.target.id;
+                    deleteWork()
+                    console.log(bearer);
+                    function deleteWork() {
+                        fetch(worksURL+"/"+id, {
+                        method: "DELETE",
+                        headers: {
+                            'Authorization': bearer,
+                            'Content-type': 'application/json'
+                        },
+                        body: null,
+                        })
+                        .then((res) => res.json())
+                        .then((data) => confirm("Désirez-vous vraiment supprimer ce projet ?"));
+                    }
+                })
+            })
+    }
+
+
+// ADD WORK
+    // ADD PICTURE
+
+function addPicture() {
+    console.log("addPic");
+    function handleSubmit () {
+        console.log("youpi");
+        if (!file.value.length) return;
+        console.log("part2");
+        let reader = new FileReader();
+        reader.onload = logFile;
+        reader.readAsDataURL(file.files[0]);
+    }
+          
+    function logFile (e) {
+        const picAdd = modal.querySelector(".pic-add")
+        console.log("logFile");
+        let str = e.target.result;
+        let img = document.createElement('img');
+        img.src = str;
+        picAdd.append(img);
+        console.log(str);
+    }
+    handleSubmit()
+}
