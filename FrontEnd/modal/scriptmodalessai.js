@@ -111,17 +111,16 @@ const page = {
                 <label for="category">Catégorie</label>
                 <select name="category" id="category" required>
                     <option value="">--Choisir la catégorie--</option>
-                    <option value="1">Objets</option>
-                    <option value="2">Appartements</option>
-                    <option value="3">Hôtels & restaurants</option>
                 </select>
                 <span class="line"></span>
                 <input id="add-picture-btn" type="submit" value="Valider"><br>
             </form>`,
                 null
         )
- 
+        
+        fetchCategories()
         addPicture()
+        modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addworky())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
     // finish: function() {
@@ -160,6 +159,25 @@ document.querySelectorAll('.js-modal').forEach(a => {
 
 // }
 // document.querySelector(".js-modal-previous").addEventListener("click", (e) => previousModal)
+
+
+//CATEGORY
+async function fetchCategories() {
+    await fetch("http://localhost:5678/api/categories")
+    .then((res) => res.json())
+    .then(categoriesDisplay)
+}    
+function categoriesDisplay(data) {
+    const categorySelect = modal.querySelector("#category")
+    categorySelect.innerHTML += data
+    .map((category) => {
+        return `
+        <option value="${category.id}">${category.name}</option>
+        `
+    })
+    .join('')
+}
+
 
 
 
@@ -241,4 +259,33 @@ function clickTrash() {
             }
             reader.readAsDataURL(image)
         })
+    }
+
+
+    function getWorkSub() {
+        let image = document.getElementById("img").value;
+        let title = document.getElementById("title").value;
+        let category = document.getElementById("category").value;
+        const workSub = {
+            image: image,
+            title: title,
+            category:category
+        }
+        return workSub;
+    }
+
+    
+    function addworky() {
+        e.preventDefault();
+        let workSub = getWorkSub();
+        fetch(worksURL, {
+        method: "POST",
+        headers: {
+            'Authorization': bearer,
+            'Content-type': 'application/json',
+        },
+        body: JSON.stringify(workSub)
+        })
+        .then((res) => res.json())
+        .then((data) => confirm("Désirez-vous vraiment supprimer ce projet ?"));
     }
