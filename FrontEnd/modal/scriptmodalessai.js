@@ -1,11 +1,22 @@
 const worksURL = "http://localhost:5678/api/works";
 const token = localStorage.getItem("token");
+const jsModal = document.querySelectorAll('.js-modal')
 console.log(token)
-
-
 let modal = null;
 let item;
 let works = []
+
+const editBtnDisplay = () => {
+    if (token) {
+        console.log(jsModal);
+        jsModal.forEach((btn) => {btn.style.visibility = "visible";})
+    }
+    else {
+        jsModal.forEach((btn) => {btn.style.visibility = "hidden";})
+    }
+}
+editBtnDisplay()
+
 
 async function getWorks() {
     await fetch(worksURL)
@@ -15,6 +26,14 @@ async function getWorks() {
 }
 
 getWorks()
+
+async function getIndWorks(id) {
+    await fetch(worksURL + "/" + id)
+    .then((res) => res.json())
+    .then((data) => work = data)
+}
+
+
 const openModal = function (e) {
     e.preventDefault();
     const target = document.querySelector(e.target.getAttribute('href'));
@@ -95,8 +114,8 @@ const page = {
             console.log("fin vue1");
             document.addEventListener("click", (e) => console.log(e))
             modal.querySelectorAll(".edit-item").forEach(btn => {btn.addEventListener('click', (e) => {
-                let idWork = e.target.id;
-                this.vue3(idWork);
+                let id = e.target.id;
+                this.vue3(id);
             })}) //RECUPERER E.TARGET.ID AFIN DE RECUPERER LE TRAVAIL
             modal.querySelector("#add-btn").addEventListener('click', () => this.vue2());
         },
@@ -134,18 +153,23 @@ const page = {
         modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addworky())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
-        vue3: function(idWork) {
-            console.log(idWork);
+        vue3: function(id) {
+            console.log(id);
+            
         modal.querySelector(".js-modal-previous").style.display = null;
         modal.querySelector(".content").classList.remove("modal-gallery");
         modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
         modal.querySelector(".content").className += " vue2";
+            
+        // getIndWorks(id) 
+
+
         utils.pageContent(
             "Editer photo",
             `
             <input type="file" id="file" accept="image/*" hidden>
             <div class="img-area" data-img="">
-                <img class="modal-gallery-img" src=${idWork.imageUrl} alt=${idWork.title} crossorigin="anonymous" class="modal-img">
+                <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
             </div>
             <form id="add-form" action="#" method="post">
                 <label for="title">Titre</label>
@@ -278,12 +302,10 @@ function categoriesDisplay(data) {
         const workSub = {
             image: image,
             title: title,
-            category:category
+            category: category
         }
         return workSub;
-    }
-
-    
+    }   
     function addworky() {
         e.preventDefault();
         let workSub = getWorkSub();
@@ -298,12 +320,6 @@ function categoriesDisplay(data) {
         .then((res) => res.json())
         .then((data) => confirm("Désirez-vous ajouter ce projet ?"));
     }
-
-
-addworky()
-
-
-
 
     document.addEventListener('click', (e) => {
         console.log(e.target);

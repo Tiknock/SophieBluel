@@ -3,6 +3,7 @@ const form = document.getElementById("login-form");
 const loginBtn = document.getElementById('login-btn');
 
 
+
 function getUserLog() {
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
