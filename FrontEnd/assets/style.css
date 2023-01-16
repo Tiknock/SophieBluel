@@ -397,6 +397,7 @@ cursor: pointer;
 	background: #E8F1F6; 
 	overflow: hidden;
 	width: 100%;
+	padding: 0 0 10px 0;
 	height: 189px;
 	margin: auto;
 }
@@ -439,7 +440,6 @@ cursor: pointer;
 	opacity: 1;
 }
 .select-image {
-	width: 30%;
 	margin: auto;
 	border-radius: 50px;
 	font-family: "Work Sans";

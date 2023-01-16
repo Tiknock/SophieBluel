@@ -56,30 +56,31 @@ const utils = {
     deleteWorks: function clickTrash() {
         modal.querySelectorAll('.deleteBtn')
         .forEach((btn) => {
-                    btn.addEventListener('click', (e) => {
-                        e.preventDefault()
-                        let id = e.target.id;
-                        deleteWork()
-                        console.log(token);
-                        function deleteWork() {
-                            fetch(worksURL+"/"+id, {
-                            method: "DELETE",
-                            headers: {
-                                'Authorization': "Bearer " + token,
-                                'Content-type': 'application/json'
-                            },
-                            body: null,
-                            })
-                            .then((res) => res.json())
-                            .then((data) => confirm("Désirez-vous vraiment supprimer ce projet ?"));
-                        }
-                    })
+            // e.preventDefault()
+            btn.addEventListener('click', (e) => {
+            let id = e.target.id;
+            if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
+                deleteWork()
+              } else {
+                return
+              }
+            console.log(token);
+            function deleteWork() {
+                fetch(worksURL+"/"+id, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': "Bearer " + token,
+                        'Content-type': 'application/json'
+                    },
+                    body: null,
                 })
+                .then((res) => res.json())
+                .then((data) => data);
             }
-    // },
-    // store: function() {
-    //     localStorage.exercices = JSON.stringify(exerciceArray);
-    // }
+                return false
+            })
+        })
+    }
 }
 
 const page = {
@@ -109,14 +110,13 @@ const page = {
             <a href="#" id="delete-gallery">Supprimer la galerie</a>`
             );
             // utils.handleEventArrow();
-            // reboot.addEventListener('click', () => utils.reboot());
             utils.deleteWorks()
             console.log("fin vue1");
             document.addEventListener("click", (e) => console.log(e))
             modal.querySelectorAll(".edit-item").forEach(btn => {btn.addEventListener('click', (e) => {
-                let id = e.target.id;
-                this.vue3(id);
-            })}) //RECUPERER E.TARGET.ID AFIN DE RECUPERER LE TRAVAIL
+                let workInd = e.target.id;
+                this.vue3(workInd);
+            })})
             modal.querySelector("#add-btn").addEventListener('click', () => this.vue2());
         },
         vue2: function() {
@@ -127,19 +127,18 @@ const page = {
         utils.pageContent(
             "Ajout photo",
             `
+            <form id="add-form" method="post">
             <input type="file" id="file" accept="image/*" hidden>
-            <div class="img-area" data-img="">
-                <i class="fa-regular fa-image"></i>
-                </label>
-                <input type="file" style="visibility:hidden" id="file" name="avatar" accept="image/png, image/jpeg" required>
-                <button class="select-image">+ Ajouter photo</button>
-                <p>jpg, png: 4mo max</p>
-            </div>
-            <form id="add-form" action="#" method="post">
-                <label for="title">Titre</label>
-                <input type="text" name="title" id="title" required>
-                <label for="category">Catégorie</label>
-                <select name="category" id="category" required>
+                <div class="img-area" data-img="">
+                    <i class="fa-regular fa-image"></i>
+                    <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg" required>
+                    <button class="select-image">+ Ajouter photo</button>
+                    <p>jpg, png: 4mo max</p>
+                </div>
+                <label for="add-title">Titre</label>
+                <input type="text" name="title" id="add-title" required>
+                <label for="add-category">Catégorie</label>
+                <select class="category" name="category" id="add-category" required>
                     <option value="">--Choisir la catégorie--</option>
                 </select>
                 <span class="line"></span>
@@ -153,51 +152,53 @@ const page = {
         modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addworky())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
-        vue3: function(id) {
-            console.log(id);
+        vue3: function(workInd) {
+            console.log(workInd);
             
         modal.querySelector(".js-modal-previous").style.display = null;
         modal.querySelector(".content").classList.remove("modal-gallery");
         modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
         modal.querySelector(".content").className += " vue2";
             
+
+        let thisWork = works
+        .filter((work) => {
+            if (work.id == workInd) {
+                return work
+            }
+        })
+        // .filter((work) => {
+
+        // })
+        .map((work) => 
+        `
+        <input type="file" id="file" accept="image/*" hidden>
+        <form id="edit-form" action="#" method="post">
+            <div class="img-area" data-img="">
+                <img class="modal-gallery-img" src=${work.imageUrl} alt="${work.title}" crossorigin="anonymous" class="modal-img">
+            </div>
+            <label for="edit-title">Titre</label>
+            <input type="text" name="title" id="edit-title" value="${work.title}" required>
+            <label for="edit-category">Catégorie</label>
+            <select class="category" name="category" id="edit-category" required>
+                <option value="">--Choisir la catégorie--</option>
+            </select>
+            <span class="line"></span>
+            <input id="edit-picture-btn" type="submit" value="Valider"><br>
+        </form>`)
         // getIndWorks(id) 
 
 
         utils.pageContent(
             "Editer photo",
-            `
-            <input type="file" id="file" accept="image/*" hidden>
-            <div class="img-area" data-img="">
-                <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
-            </div>
-            <form id="add-form" action="#" method="post">
-                <label for="title">Titre</label>
-                <input type="text" name="title" id="title" required>
-                <label for="category">Catégorie</label>
-                <select name="category" id="category" required>
-                    <option value="">--Choisir la catégorie--</option>
-                </select>
-                <span class="line"></span>
-                <input id="add-picture-btn" type="submit" value="Valider"><br>
-            </form>`,
-                null
+            thisWork,
+            null
         )
         
         fetchCategories()
-        addPicture()
-        modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addworky())
+        // modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addworky())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
-    // finish: function() {
-    //     utils.pageContent(
-    //         "C'est terminé !",
-    //         "<button id='start'>Recommencer</button>",
-    //         "<button id='reboot' class='btn-reboot'>Réinitialiser <i class='fa fa-times-circle'></i></button>"
-    //     );
-    //     reboot.addEventListener('click', () => utils.reboot());
-    //     start.addEventListener('click', () => this.routine());
-    // },
 }
 
 const closeModal = function (e) {
@@ -228,7 +229,7 @@ async function fetchCategories() {
     .then(categoriesDisplay)
 }    
 function categoriesDisplay(data) {
-    const categorySelect = modal.querySelector("#category")
+    const categorySelect = modal.querySelector(".category")
     categorySelect.innerHTML += data
     .map((category) => {
         return `
@@ -237,10 +238,6 @@ function categoriesDisplay(data) {
     })
     .join('')
 }
-
-
-
-
 
 
 // Galerie drag&drop 
@@ -257,8 +254,6 @@ function categoriesDisplay(data) {
 //         e.target.appendChild(item)
 //     }
 // })
-
-
 
 
 // ADD WORK
@@ -288,6 +283,7 @@ function categoriesDisplay(data) {
                 imgArea.className += ' active'
                 imgArea.dataset.img = image.name
                 img.className += ' img-add'
+                img.setAttribute("id","add-img")
                 console.log("finito");
             }
             reader.readAsDataURL(image)
@@ -296,29 +292,30 @@ function categoriesDisplay(data) {
 
 
     function getWorkSub() {
-        let image = document.getElementById("img").value;
-        let title = document.getElementById("title").value;
-        let category = document.getElementById("category").value;
+        let image = document.getElementById("add-img").src;
+        let title = document.getElementById("add-title").value;
+        let category = document.getElementById("add-category").value;
         const workSub = {
-            image: image,
             title: title,
-            category: category
+            imageUrl: image,
+            categoryId: category
         }
+        console.log(workSub)
         return workSub;
     }   
-    function addworky() {
-        e.preventDefault();
+    function addworky(e) {
         let workSub = getWorkSub();
         fetch(worksURL, {
         method: "POST",
         headers: {
             'Authorization': "Bearer " + token,
-            'Content-type': 'application/json'
+            'Content-type': 'multipart/form-data'
         },
         body: JSON.stringify(workSub)
         })
         .then((res) => res.json())
-        .then((data) => confirm("Désirez-vous ajouter ce projet ?"));
+        .then((data) => console.log("yeeeeeees"));
+        // .then((data) => confirm("Désirez-vous ajouter ce projet ?"));
     }
 
     document.addEventListener('click', (e) => {
