@@ -56,7 +56,6 @@ const utils = {
     deleteWorks: function clickTrash() {
         modal.querySelectorAll('.deleteBtn')
         .forEach((btn) => {
-            // e.preventDefault()
             btn.addEventListener('click', (e) => {
             let id = e.target.id;
             if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
@@ -65,19 +64,19 @@ const utils = {
                 return
               }
             console.log(token);
-            function deleteWork() {
-                fetch(worksURL+"/"+id, {
-                    method: "DELETE",
-                    headers: {
-                        'Authorization': "Bearer " + token,
-                        'Content-type': 'application/json'
-                    },
-                    body: null,
-                })
-                .then((res) => res.json())
-                .then((data) => data);
-            }
-                return false
+                function deleteWork() {
+                    fetch(worksURL+"/"+id, {
+                        method: "DELETE",
+                        headers: {
+                            'Authorization': "Bearer " + token,
+                            'Content-type': 'application/json'
+                        },
+                        body: null,
+                    })
+                    .then((res) => res.json())
+                    .then((data) => console.log(data))
+                    .catch((err) => console.log(err));
+                }
             })
         })
     }
@@ -99,7 +98,7 @@ const page = {
             <i class="fa-solid fa-trash-can deleteBtn" id="${work.id}"></i>
             </div>
             <a class="edit-item" id="${work.id}">éditer</a>
-            </figure>
+        </figure>
             `
             )
         .join("");       
@@ -128,7 +127,6 @@ const page = {
             "Ajout photo",
             `
             <form id="add-form" method="post">
-            <input type="file" id="file" accept="image/*" hidden>
                 <div class="img-area" data-img="">
                     <i class="fa-regular fa-image"></i>
                     <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg" required>
@@ -149,7 +147,7 @@ const page = {
         
         fetchCategories()
         addPicture()
-        modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addworky())
+        modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addWork())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
         vue3: function(workInd) {
@@ -290,34 +288,92 @@ function categoriesDisplay(data) {
         })
     }
 
+    
 
-    function getWorkSub() {
-        let image = document.getElementById("add-img").src;
-        let title = document.getElementById("add-title").value;
-        let category = document.getElementById("add-category").value;
-        const workSub = {
-            title: title,
-            imageUrl: image,
-            categoryId: category
+    function addWork() {
+        convertToBinary()
+        function convertToBinary() {
+            const getBase64StringFromDataURL = (dataURL) => dataURL.replace('data:', '').replace(/^.+,/, '');
+            const image = document.querySelector('#add-img');
+        console.log(image)
+            const toDataURL = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = image.naturalWidth;
+                canvas.height = image.naturalHeight;
+                canvas.getContext('2d').drawImage(image, 0, 0);
+                const dataURL = canvas.toDataURL();
+                console.log(dataURL);
+                const base64 = getBase64StringFromDataURL(dataURL);
+                console.log(base64);
+                postWork(base64)
+            }
+            if (image.complete) toDataURL(image);
+            else image.onload = toDataURL;
         }
-        console.log(workSub)
-        return workSub;
-    }   
-    function addworky(e) {
-        let workSub = getWorkSub();
-        fetch(worksURL, {
-        method: "POST",
-        headers: {
-            'Authorization': "Bearer " + token,
-            'Content-type': 'multipart/form-data'
-        },
-        body: JSON.stringify(workSub)
-        })
-        .then((res) => res.json())
-        .then((data) => console.log("yeeeeeees"));
-        // .then((data) => confirm("Désirez-vous ajouter ce projet ?"));
+        async function postWork(base64) {
+            addworky(base64)
+            function getWorkSub(base64) {
+                let image = base64
+                let title = document.getElementById("add-title").value;
+                let category = document.getElementById("add-category").value;
+                category = parseInt(category)
+                const workSub = {
+                    image: image,
+                    title: title,
+                    category: category
+                }
+                console.log(workSub)
+                return workSub;
+            }   
+            function addworky() {
+                let workSub = getWorkSub(base64);
+                fetch(worksURL, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': "Bearer " + token,
+                    'Content-type': 'multipart/form-data'
+                },
+                body: JSON.stringify(workSub)
+                })
+                .then((res) => res.json())
+                .then((data) => console.log(data))
+                .catch((err) => console.log(err));
+            }
+        }
     }
+
 
     document.addEventListener('click', (e) => {
         console.log(e.target);
     })
+
+
+
+
+
+// AVEC FORMDATA
+
+             // console.log(base64);
+            // // let image = document.querySelector("#add-img").src;
+            // let title = document.getElementById("add-title").value;
+            // let category = document.getElementById("add-category").value;
+            // category = parseInt(category)
+            // let formData = new FormData();
+            // formData.append('image', base64);
+            // formData.append('title', title);
+            // formData.append('category', category);
+            // console.log(formData);
+            //     fetch(worksURL, {
+            //     method: "POST",
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Authorization': "Bearer " + token,
+            //         'Content-type': 'multipart/form-data'
+            //     },
+            //     body: formData
+            //     })
+            //     .then((res) => console.log(res))
+            //     .then((res) => res.json())
+            //     .then((data) => console.log(data))
+            //     .catch((err) => console.log(err));
