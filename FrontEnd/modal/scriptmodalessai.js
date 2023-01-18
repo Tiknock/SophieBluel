@@ -86,7 +86,6 @@ const utils = {
             console.log(image);
             const reader = new FileReader()
             reader.onload = function () {
-                console.log("yes");
                 const imgUrl = reader.result;
                 let img = document.createElement('img');
                 img.src = imgUrl;
@@ -97,7 +96,6 @@ const utils = {
                 imgArea.dataset.img = image.name
                 img.className += ' img-add'
                 img.setAttribute("id","add-img")
-                console.log("finito");
             }
             reader.readAsDataURL(image)
         })
@@ -163,6 +161,7 @@ const page = {
         utils.pageContent(
             "Ajout photo",
             `
+            <form id="add-form">
                 <div class="img-area" data-img="">
                     <i class="fa-regular fa-image"></i>
                     <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg" required>
@@ -176,13 +175,14 @@ const page = {
                     <option value="">--Choisir la catégorie--</option>
                 </select>
                 <span class="line"></span>
-                <button id="add-picture-btn">Valider</button>`,
+                <button id="add-picture-btn">Valider</button>
+            </form>`,
                 null
         )
         
         utils.fetchCategories()
         utils.addPicture()
-        modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addWork())
+        modal.querySelector('#add-picture-btn').addEventListener('click', (e) => {e.preventDefault(); addWork()})
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
         vue3: function(workInd) {
@@ -256,30 +256,13 @@ document.querySelectorAll('.js-modal').forEach(a => {
 })
 
 // ADD WORK
-    function addWork() {
-        convertToBinary()
-        function convertToBinary() {
-            const getBase64StringFromDataURL = (dataURL) => dataURL.replace('data:', '').replace(/^.+,/, '');
-            const image = document.querySelector('#add-img');
-        console.log(image)
-            const toDataURL = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = image.naturalWidth;
-                canvas.height = image.naturalHeight;
-                canvas.getContext('2d').drawImage(image, 0, 0);
-                const dataURL = canvas.toDataURL();
-                console.log(dataURL);
-                const base64 = getBase64StringFromDataURL(dataURL);
-                console.log(base64);
-                postWork(base64)
-            }
-            if (image.complete) toDataURL(image);
-            else image.onload = toDataURL;
-        }
-        async function postWork(base64) {
-            addworky(base64)
-            function getWorkSub(base64) {
-                let image = base64
+
+function addWork() {
+    postWork()
+        async function postWork() {
+            function getWorkSub() {
+                const file = document.querySelector("#file");
+                let image = file.files[0];
                 let title = document.getElementById("add-title").value;
                 let category = document.getElementById("add-category").value;
                 category = parseInt(category)
@@ -291,9 +274,10 @@ document.querySelectorAll('.js-modal').forEach(a => {
                 // console.log(workSub)
                 return formData;
             }   
-
+            
+            addworky()
             function addworky() {
-                let formData = getWorkSub(base64);
+                let formData = getWorkSub();
                 console.log([...formData]);
                 console.log(JSON.stringify(formData));
                 fetch(worksURL, {
@@ -303,7 +287,7 @@ document.querySelectorAll('.js-modal').forEach(a => {
                     'Authorization': "Bearer " + token,
                     // 'Content-type': 'multipart/form-data'
                 },
-                body: JSON.stringify(formData)
+                body: formData
                 })
                 .then(function (response) {
                     responseClone = response.clone(); // 2
