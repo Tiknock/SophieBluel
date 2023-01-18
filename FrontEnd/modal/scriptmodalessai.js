@@ -24,7 +24,6 @@ async function getWorks() {
     .then((data) => works = data)
     .then(page.vue1())
 }
-
 getWorks()
 
 async function getIndWorks(id) {
@@ -47,41 +46,79 @@ const openModal = function (e) {
     getWorks()
 }
 
+// Modale avec fonctionnalités et vues
+// ---Fonctionnalités
 const utils = {
     pageContent: function(title, content, btn) {
         modal.querySelector("h1").innerHTML = title;
         modal.querySelector(".content").innerHTML = content;
         modal.querySelector(".btn-container").innerHTML = btn;
     },
-    deleteWorks: function clickTrash() {
-        modal.querySelectorAll('.deleteBtn')
-        .forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-            let id = e.target.id;
-            if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
-                deleteWork()
-              } else {
-                return
-              }
-            console.log(token);
-                function deleteWork() {
-                    fetch(worksURL+"/"+id, {
-                        method: "DELETE",
-                        headers: {
-                            'Authorization': "Bearer " + token,
-                            'Content-type': 'application/json'
-                        },
-                        body: null,
-                    })
-                    .then((res) => res.json())
-                    .then((data) => console.log(data))
-                    .catch((err) => console.log(err));
-                }
+    deleteWorks(id) {
+        if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
+            fetch(worksURL+"/"+id, {
+            method: "DELETE",
+            headers: {
+                'Authorization': "Bearer " + token,
+                'Content-type': 'application/json'
+            },
+            body: null,
             })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+        } else {
+            return
+        }
+        console.log(token);
+    },
+    addPicture() {
+        const selectImage = document.querySelector(".select-image")
+        const inputFile = document.querySelector("#file")
+        const imgArea = document.querySelector('.img-area')
+        
+        selectImage.addEventListener('click', () => {
+            inputFile.click();
         })
-    }
+
+        inputFile.addEventListener('change', function () {
+            const image = this.files[0]
+            console.log(image);
+            const reader = new FileReader()
+            reader.onload = function () {
+                console.log("yes");
+                const imgUrl = reader.result;
+                let img = document.createElement('img');
+                img.src = imgUrl;
+                console.log(img);
+                console.log(reader);
+                imgArea.appendChild(img)
+                imgArea.className += ' active'
+                imgArea.dataset.img = image.name
+                img.className += ' img-add'
+                img.setAttribute("id","add-img")
+                console.log("finito");
+            }
+            reader.readAsDataURL(image)
+        })
+    },
+    fetchCategories() {
+        fetch("http://localhost:5678/api/categories")
+        .then((res) => res.json())
+        .then((data)=> {
+            const categorySelect = modal.querySelector(".category")
+        categorySelect.innerHTML += data
+        .map((category) => {
+            return `
+            <option value="${category.id}">${category.name}</option>
+            `
+        })
+        .join('')
+        })
+    },
 }
 
+// ---Vues
 const page = {
     vue1: function() {
         modal.querySelector(".js-modal-previous").style.display = "none";
@@ -94,8 +131,8 @@ const page = {
         <figure draggable="true" data-draggable="item">
             <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
             <div class="icons">
-            <i class="fa-solid fa-up-down-left-right"></i>
-            <i class="fa-solid fa-trash-can deleteBtn" id="${work.id}"></i>
+            <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
+            <button type="submit" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
             </div>
             <a class="edit-item" id="${work.id}">éditer</a>
         </figure>
@@ -109,13 +146,13 @@ const page = {
             <a href="#" id="delete-gallery">Supprimer la galerie</a>`
             );
             // utils.handleEventArrow();
-            utils.deleteWorks()
             console.log("fin vue1");
             document.addEventListener("click", (e) => console.log(e))
             modal.querySelectorAll(".edit-item").forEach(btn => {btn.addEventListener('click', (e) => {
                 let workInd = e.target.id;
                 this.vue3(workInd);
             })})
+            modal.querySelectorAll('.deleteBtn').forEach((btn) => {btn.addEventListener('click', (e) => {e.preventDefault(); let id = e.target.id; utils.deleteWorks(id)})})
             modal.querySelector("#add-btn").addEventListener('click', () => this.vue2());
         },
         vue2: function() {
@@ -126,7 +163,6 @@ const page = {
         utils.pageContent(
             "Ajout photo",
             `
-            <form id="add-form" method="post">
                 <div class="img-area" data-img="">
                     <i class="fa-regular fa-image"></i>
                     <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg" required>
@@ -140,13 +176,12 @@ const page = {
                     <option value="">--Choisir la catégorie--</option>
                 </select>
                 <span class="line"></span>
-                <input id="add-picture-btn" type="submit" value="Valider"><br>
-            </form>`,
+                <button id="add-picture-btn">Valider</button>`,
                 null
         )
         
-        fetchCategories()
-        addPicture()
+        utils.fetchCategories()
+        utils.addPicture()
         modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addWork())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
@@ -220,76 +255,7 @@ document.querySelectorAll('.js-modal').forEach(a => {
     a.addEventListener('click', openModal)
 })
 
-//CATEGORY
-async function fetchCategories() {
-    await fetch("http://localhost:5678/api/categories")
-    .then((res) => res.json())
-    .then(categoriesDisplay)
-}    
-function categoriesDisplay(data) {
-    const categorySelect = modal.querySelector(".category")
-    categorySelect.innerHTML += data
-    .map((category) => {
-        return `
-        <option value="${category.id}">${category.name}</option>
-        `
-    })
-    .join('')
-}
-
-
-// Galerie drag&drop 
-
-// document.addEventListener('dragstart', (e) => {
-//     item = e.target.parentNode;
-// })
-// document.addEventListener('dragover', (e) => {
-//     e.preventDefault();
-// })
-// document.addEventListener('drop', (e) => {
-//     if(e.target.getAttribute("data-draggable") == "target") {
-//         e.preventDefault();
-//         e.target.appendChild(item)
-//     }
-// })
-
-
 // ADD WORK
-    // ADD PICTURE
-
-    function addPicture() {
-        const selectImage = document.querySelector(".select-image")
-        const inputFile = document.querySelector("#file")
-        const imgArea = document.querySelector('.img-area')
-        
-    selectImage.addEventListener('click', () => {
-        inputFile.click();
-    })
-
-        inputFile.addEventListener('change', function () {
-            const image = this.files[0]
-            console.log(image);
-            const reader = new FileReader()
-            reader.onload = function () {
-                console.log("yes");
-                const imgUrl = reader.result;
-                let img = document.createElement('img');
-                img.src = imgUrl;
-                console.log(img);
-                console.log(reader);
-                imgArea.appendChild(img)
-                imgArea.className += ' active'
-                imgArea.dataset.img = image.name
-                img.className += ' img-add'
-                img.setAttribute("id","add-img")
-                console.log("finito");
-            }
-            reader.readAsDataURL(image)
-        })
-    }
-
-    
-
     function addWork() {
         convertToBinary()
         function convertToBinary() {
@@ -317,28 +283,41 @@ function categoriesDisplay(data) {
                 let title = document.getElementById("add-title").value;
                 let category = document.getElementById("add-category").value;
                 category = parseInt(category)
-                const workSub = {
-                    image: image,
-                    title: title,
-                    category: category
-                }
-                console.log(workSub)
-                return workSub;
+                let formData = new FormData();
+                formData.append('image', image);
+                formData.append('title', title);
+                formData.append('category', category);
+                console.log(typeof(category));
+                // console.log(workSub)
+                return formData;
             }   
+
             function addworky() {
-                let workSub = getWorkSub(base64);
+                let formData = getWorkSub(base64);
+                console.log([...formData]);
+                console.log(JSON.stringify(formData));
                 fetch(worksURL, {
                 method: "POST",
                 headers: {
-                    'Accept': 'application/json',
+                    // 'Accept': 'application/json',
                     'Authorization': "Bearer " + token,
-                    'Content-type': 'multipart/form-data'
+                    // 'Content-type': 'multipart/form-data'
                 },
-                body: JSON.stringify(workSub)
+                body: JSON.stringify(formData)
                 })
-                .then((res) => res.json())
-                .then((data) => console.log(data))
-                .catch((err) => console.log(err));
+                .then(function (response) {
+                    responseClone = response.clone(); // 2
+                    return response.json();
+                })
+                .then(function (data) {
+                    console.log(data);
+                }, function (rejectionReason) { // 3
+                    console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
+                    responseClone.text() // 5
+                    .then(function (bodyText) {
+                        console.log('Received the following instead of valid JSON:', bodyText); // 6
+                    });
+                });
             }
         }
     }
@@ -347,33 +326,3 @@ function categoriesDisplay(data) {
     document.addEventListener('click', (e) => {
         console.log(e.target);
     })
-
-
-
-
-
-// AVEC FORMDATA
-
-             // console.log(base64);
-            // // let image = document.querySelector("#add-img").src;
-            // let title = document.getElementById("add-title").value;
-            // let category = document.getElementById("add-category").value;
-            // category = parseInt(category)
-            // let formData = new FormData();
-            // formData.append('image', base64);
-            // formData.append('title', title);
-            // formData.append('category', category);
-            // console.log(formData);
-            //     fetch(worksURL, {
-            //     method: "POST",
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Authorization': "Bearer " + token,
-            //         'Content-type': 'multipart/form-data'
-            //     },
-            //     body: formData
-            //     })
-            //     .then((res) => console.log(res))
-            //     .then((res) => res.json())
-            //     .then((data) => console.log(data))
-            //     .catch((err) => console.log(err));

@@ -128,3 +128,23 @@ VUE2 :
 	display: flex;
 	justify-content: center;
 } */
+
+
+
+
+
+
+// Galerie drag&drop 
+
+// document.addEventListener('dragstart', (e) => {
+//     item = e.target.parentNode;
+// })
+// document.addEventListener('dragover', (e) => {
+//     e.preventDefault();
+// })
+// document.addEventListener('drop', (e) => {
+//     if(e.target.getAttribute("data-draggable") == "target") {
+//         e.preventDefault();
+//         e.target.appendChild(item)
+//     }
+// })

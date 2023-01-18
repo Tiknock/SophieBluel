@@ -325,6 +325,7 @@ footer nav ul {
 }
 .icons {
 	position: absolute;
+	width: auto;
 	top: 6px;
 	right: 6px;
 }
@@ -344,7 +345,7 @@ cursor: pointer;
 	border-radius: 2px;
 }
 .edit-item {
-    margin: 0;
+	margin: 0;
     font-family: "Work Sans";
     font-weight: 400;
     font-size: 12px;
@@ -372,6 +373,17 @@ cursor: pointer;
     font-family: "Syne";
     font-weight: 400;
     font-size: 14px;
+}
+.deleteBtn {
+	padding: 0;
+	background: #000;
+}
+.moveBtn {
+	visibility: hidden;
+}
+.modal-gallery figure:hover .moveBtn {
+		padding: 0;
+		background: #000;
 }
 
 
@@ -463,6 +475,15 @@ cursor: pointer;
 	width: 100%;
 }
 #add-picture-btn {
+	font-family: 'Syne';
+	font-weight: 700;
+	margin : 2em auto ;
+	text-align: center;
+	border-radius: 60px ;
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 	color: #FFF;
 	background: #A7A7A7;
 	border: 1px solid #A7A7A7;
