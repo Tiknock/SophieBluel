@@ -1,14 +1,13 @@
 const worksURL = "http://localhost:5678/api/works";
 const token = localStorage.getItem("token");
 const jsModal = document.querySelectorAll('.js-modal')
-console.log(token)
+const modal3 = document.querySelector('#modal3')
 let modal = null;
 let item;
 let works = []
 
 const editBtnDisplay = () => {
     if (token) {
-        console.log(jsModal);
         jsModal.forEach((btn) => {btn.style.visibility = "visible";})
     }
     else {
@@ -22,7 +21,6 @@ async function getWorks() {
     await fetch(worksURL)
     .then((res) => res.json())
     .then((data) => works = data)
-    .then(page.vue1())
 }
 getWorks()
 
@@ -43,7 +41,11 @@ const openModal = function (e) {
     modal.addEventListener('click', closeModal)
     modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
-    getWorks()
+    if (modal == modal3) {
+        page.vue1()
+        // getWorks()
+    }
+    // getWorks()
 }
 
 // Modale avec fonctionnalités et vues
