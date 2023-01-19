@@ -49,7 +49,7 @@ const openModal = function (e) {
 // Modale avec fonctionnalités et vues
 // ---Fonctionnalités
 const utils = {
-    pageContent: function(title, content, btn) {
+    pageContent(title, content, btn) {
         modal.querySelector("h1").innerHTML = title;
         modal.querySelector(".content").innerHTML = content;
         modal.querySelector(".btn-container").innerHTML = btn;
@@ -93,6 +93,7 @@ const utils = {
                 console.log(reader);
                 imgArea.appendChild(img)
                 imgArea.className += ' active'
+                imgArea.className += ' after'
                 imgArea.dataset.img = image.name
                 img.className += ' img-add'
                 img.setAttribute("id","add-img")
@@ -114,6 +115,39 @@ const utils = {
         .join('')
         })
     },
+    addWork() {  
+        const file = document.querySelector("#file");
+        let image = file.files[0];
+        let title = document.getElementById("add-title").value;
+        let category = document.getElementById("add-category").value;
+        category = parseInt(category)
+        let formData = new FormData();
+        formData.append('image', image);
+        formData.append('title', title);
+        formData.append('category', category);
+        fetch(worksURL, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': "Bearer " + token,
+                // 'Content-type': 'multipart/form-data'
+            },
+            body: formData
+        })
+        .then(function (response) {
+            responseClone = response.clone(); // 2
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+        }, function (rejectionReason) { // 3
+            console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
+            responseClone.text() // 5
+            .then(function (bodyText) {
+                console.log('Received the following instead of valid JSON:', bodyText); // 6
+            });
+        });
+    }
 }
 
 // ---Vues
@@ -164,25 +198,44 @@ const page = {
             <form id="add-form">
                 <div class="img-area" data-img="">
                     <i class="fa-regular fa-image"></i>
-                    <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg" required>
-                    <button class="select-image">+ Ajouter photo</button>
+                    <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg">
+                    <button type="button" class="select-image">+ Ajouter photo</button>
                     <p>jpg, png: 4mo max</p>
                 </div>
                 <label for="add-title">Titre</label>
-                <input type="text" name="title" id="add-title" required>
+                <input type="text" name="title" id="add-title">
                 <label for="add-category">Catégorie</label>
-                <select class="category" name="category" id="add-category" required>
+                <select class="category" name="category" id="add-category">
                     <option value="">--Choisir la catégorie--</option>
                 </select>
                 <span class="line"></span>
-                <button id="add-picture-btn">Valider</button>
+                <button type="submit" id="add-picture-btn">Valider</button>
             </form>`,
                 null
         )
-        
         utils.fetchCategories()
+
+        const verifImg = modal.querySelector('#add-img')
+        const verifTitle = modal.querySelector('#add-title').value
+        const select = modal.querySelector('#add-category')
+        const verifCategory = select.options[select.selectedIndex].value
+        
         utils.addPicture()
-        modal.querySelector('#add-picture-btn').addEventListener('click', (e) => {e.preventDefault(); addWork()})
+        modal.querySelector('#add-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // if (verifImg && verifTitle !== "" && verifCategory !== "") {
+                utils.addWork()
+            // } else if (!verifImg) {
+            //     alert("Veuillez ajouter une image.")
+            //     return false
+            // } else if (verifTitle == "") {
+            //     alert("Veuillez ajouter un titre.")
+            //     return false
+            // } else if (verifCategory == ""){
+            //     alert("Veuillez indiquer une catégorie.")
+            //     return false
+            // }
+        })
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
         vue3: function(workInd) {
@@ -200,24 +253,20 @@ const page = {
                 return work
             }
         })
-        // .filter((work) => {
-
-        // })
         .map((work) => 
         `
-        <input type="file" id="file" accept="image/*" hidden>
-        <form id="edit-form" action="#" method="post">
-            <div class="img-area" data-img="">
+        <form id="edit-form">
+            <div class="img-area after" data-img="">
                 <img class="modal-gallery-img" src=${work.imageUrl} alt="${work.title}" crossorigin="anonymous" class="modal-img">
             </div>
             <label for="edit-title">Titre</label>
-            <input type="text" name="title" id="edit-title" value="${work.title}" required>
+            <input type="text" name="title" id="edit-title" value="${work.title}">
             <label for="edit-category">Catégorie</label>
-            <select class="category" name="category" id="edit-category" required>
+            <select class="category" name="category" id="edit-category">
                 <option value="">--Choisir la catégorie--</option>
             </select>
             <span class="line"></span>
-            <input id="edit-picture-btn" type="submit" value="Valider"><br>
+            <button type="submit" id="edit-picture-btn">Valider</button>
         </form>`)
         // getIndWorks(id) 
 
@@ -228,8 +277,8 @@ const page = {
             null
         )
         
-        fetchCategories()
-        // modal.querySelector('#add-picture-btn').addEventListener('click', (e) => addworky())
+        utils.fetchCategories()
+        // modal.querySelector('#add-picture-btn').addEventListener('click', (e) => editWork())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
 }
@@ -255,58 +304,7 @@ document.querySelectorAll('.js-modal').forEach(a => {
     a.addEventListener('click', openModal)
 })
 
-// ADD WORK
 
-function addWork() {
-    postWork()
-        async function postWork() {
-            function getWorkSub() {
-                const file = document.querySelector("#file");
-                let image = file.files[0];
-                let title = document.getElementById("add-title").value;
-                let category = document.getElementById("add-category").value;
-                category = parseInt(category)
-                let formData = new FormData();
-                formData.append('image', image);
-                formData.append('title', title);
-                formData.append('category', category);
-                console.log(typeof(category));
-                // console.log(workSub)
-                return formData;
-            }   
-            
-            addworky()
-            function addworky() {
-                let formData = getWorkSub();
-                console.log([...formData]);
-                console.log(JSON.stringify(formData));
-                fetch(worksURL, {
-                method: "POST",
-                headers: {
-                    // 'Accept': 'application/json',
-                    'Authorization': "Bearer " + token,
-                    // 'Content-type': 'multipart/form-data'
-                },
-                body: formData
-                })
-                .then(function (response) {
-                    responseClone = response.clone(); // 2
-                    return response.json();
-                })
-                .then(function (data) {
-                    console.log(data);
-                }, function (rejectionReason) { // 3
-                    console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
-                    responseClone.text() // 5
-                    .then(function (bodyText) {
-                        console.log('Received the following instead of valid JSON:', bodyText); // 6
-                    });
-                });
-            }
-        }
-    }
-
-
-    document.addEventListener('click', (e) => {
-        console.log(e.target);
-    })
+document.addEventListener('click', (e) => {
+    console.log(e.target);
+})

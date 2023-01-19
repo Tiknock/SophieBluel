@@ -244,7 +244,7 @@ nav li a:hover {
 #login {
 	height: 90vh;
 	width: 325px;
-	margin: auto;
+	margin: 100px auto;
 }
 input[type="submit"]{
 	font-family: 'Syne';
@@ -451,6 +451,17 @@ cursor: pointer;
 .img-area.active:hover::before {
 	opacity: 1;
 }
+.after {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 129px;
+height: 163px;
+}
+.img-area img {
+	height: 163px;
+	width: 129px;
+}
 .select-image {
 	margin: auto;
 	border-radius: 50px;
@@ -474,7 +485,7 @@ cursor: pointer;
 	height: 1px;
 	width: 100%;
 }
-#add-picture-btn {
+#add-picture-btn, #edit-picture-btn {
 	font-family: 'Syne';
 	font-weight: 700;
 	margin : 2em auto ;
