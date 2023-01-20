@@ -107,10 +107,39 @@ const utils = {
                 imgArea.className += ' active'
                 imgArea.className += ' after'
                 imgArea.dataset.img = image.name
-                img.className += ' img-add'
                 img.setAttribute("id","add-img")
             }
             reader.readAsDataURL(image)
+        })
+    },
+    verifyForm() {
+        const verifImg = modal.querySelector("#file")
+        const verifTitle = modal.querySelector('#add-title')
+        const select = modal.querySelector('#add-category')
+        modal.querySelector('#add-form').addEventListener('input', (e) => {
+            // console.log(verifImg.src);
+            console.log(verifTitle.value);
+            console.log(select.selectedIndex);
+            console.log(verifImg.value);
+            if (!verifTitle.value) {
+                modal.querySelector("#add-picture-btn").classList.remove("verified")
+                document.getElementById("erreur").innerHTML = "Veuillez ajouter un titre."
+            }
+            if (select.selectedIndex < 1) {
+                modal.querySelector("#add-picture-btn").classList.remove("verified")
+                document.getElementById("erreur").innerHTML = "Veuillez ajouter une catégorie."
+            }
+            if (verifImg.value == "") {
+                document.getElementById("erreur").innerHTML = "Veuillez ajouter une photo."
+                modal.querySelector("#add-picture-btn").classList.remove("verified")
+            } else if (verifImg.value !== "" && verifTitle.value && select.selectedIndex >= 1) {
+                document.getElementById("erreur").innerHTML = "";
+                modal.querySelector("#add-picture-btn").classList.add("verified")
+                modal.querySelector('#add-form').addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        utils.addWork()
+                })
+            }
         })
     },
     fetchCategories() {
@@ -222,32 +251,14 @@ const page = {
                 </select>
                 <span class="line"></span>
                 <button type="submit" id="add-picture-btn">Valider</button>
-            </form>`,
+            </form>
+            <p style="color:red" id="erreur"></p>`,
                 null
         )
         utils.fetchCategories()
-
-        const verifImg = modal.querySelector('#add-img')
-        const verifTitle = modal.querySelector('#add-title').value
-        const select = modal.querySelector('#add-category')
-        const verifCategory = select.options[select.selectedIndex].value
-        
         utils.addPicture()
-        modal.querySelector('#add-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            // if (verifImg && verifTitle !== "" && verifCategory !== "") {
-                utils.addWork()
-            // } else if (!verifImg) {
-            //     alert("Veuillez ajouter une image.")
-            //     return false
-            // } else if (verifTitle == "") {
-            //     alert("Veuillez ajouter un titre.")
-            //     return false
-            // } else if (verifCategory == ""){
-            //     alert("Veuillez indiquer une catégorie.")
-            //     return false
-            // }
-        })
+        utils.verifyForm()
+
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
         vue3: function(workInd) {

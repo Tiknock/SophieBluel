@@ -43,8 +43,12 @@ function projectsDisplay(data) {
 
 function filterEvent() {
     const btnSort = document.querySelectorAll('.btn-Sort');
+    const btnSort0 = document.getElementById(0)
+    btnSort0.classList.add("active")
     btnSort.forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', (e) => {
+        btnSort.forEach((btn) => btn.classList.remove("active"))
+        btn.classList.add("active")
         const filterMethod = parseInt(e.target.id);
         const filteredGalleryData = galleryData.filter(
           (work) => work.category.id === filterMethod
