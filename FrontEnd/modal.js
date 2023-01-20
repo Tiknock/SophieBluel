@@ -268,7 +268,6 @@ const page = {
         modal.querySelector(".content").classList.remove("modal-gallery");
         modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
         modal.querySelector(".content").className += " vue2";
-            
 
         let thisWork = works
         .filter((work) => {
@@ -290,8 +289,19 @@ const page = {
             </select>
             <span class="line"></span>
             <button type="submit" id="edit-picture-btn">Valider</button>
-        </form>`)
-        // getIndWorks(id) 
+            </form>`
+            )
+            // .filter((work) => {
+                
+            //     const select = modal.querySelector("#edit-category");
+            //     if (select.selectedIndex = work.category.id)
+            //     {
+            //         console.log(select.selectedIndex);
+            //         // select.selectedIndex = selected
+            //     }
+            // })
+            // getIndWorks(id) 
+        // console.log(select.selectedIndex)
 
 
         utils.pageContent(
