@@ -70,7 +70,6 @@ const utils = {
                     },
                     body: null,
                 })
-                .then((res) => res.json())
                 .then((data) => console.log(data))
                 .catch((err) => console.log(err));
             } else {
@@ -116,6 +115,7 @@ const utils = {
         const verifImg = modal.querySelector("#file")
         const verifTitle = modal.querySelector('#add-title')
         const select = modal.querySelector('#add-category')
+        let verifOk = false
         modal.querySelector('#add-form').addEventListener('input', (e) => {
             // console.log(verifImg.src);
             console.log(verifTitle.value);
@@ -124,23 +124,29 @@ const utils = {
             if (!verifTitle.value) {
                 modal.querySelector("#add-picture-btn").classList.remove("verified")
                 document.getElementById("erreur").innerHTML = "Veuillez ajouter un titre."
+                verifOk = false
             }
             if (select.selectedIndex < 1) {
                 modal.querySelector("#add-picture-btn").classList.remove("verified")
                 document.getElementById("erreur").innerHTML = "Veuillez ajouter une catégorie."
+                verifOk = false
             }
             if (verifImg.value == "") {
                 document.getElementById("erreur").innerHTML = "Veuillez ajouter une photo."
                 modal.querySelector("#add-picture-btn").classList.remove("verified")
+                verifOk = false
             } else if (verifImg.value !== "" && verifTitle.value && select.selectedIndex >= 1) {
                 document.getElementById("erreur").innerHTML = "";
                 modal.querySelector("#add-picture-btn").classList.add("verified")
-                modal.querySelector('#add-form').addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        utils.addWork()
-                })
+                verifOk = true
             }
-        })
+        }) 
+        if (verifOk = true) {
+        modal.querySelector('#add-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                utils.addWork()
+            })
+        }
     },
     fetchCategories() {
         fetch("http://localhost:5678/api/categories")
@@ -176,7 +182,6 @@ const utils = {
             body: formData
         })
         .then(function (response) {
-            responseClone = response.clone(); // 2
             return response.json();
         })
         .then(function (data) {
