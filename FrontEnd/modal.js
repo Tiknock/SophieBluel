@@ -56,30 +56,37 @@ const utils = {
         modal.querySelector(".content").innerHTML = content;
         modal.querySelector(".btn-container").innerHTML = btn;
     },
-    deleteWorks(id) {
-        if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
-            fetch(worksURL+"/"+id, {
-            method: "DELETE",
-            headers: {
-                'Authorization': "Bearer " + token,
-                'Content-type': 'application/json'
-            },
-            body: null,
+    deleteWorks() {
+        modal.querySelectorAll('.deleteBtn').forEach((btn) => {btn.addEventListener('click', (e) => {
+            // Rafraichissement de la page que je ne comprends pas
+            e.preventDefault()
+            let id = e.target.id;
+            if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
+                fetch(worksURL+"/"+id, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': "Bearer " + token,
+                        'Content-type': 'application/json'
+                    },
+                    body: null,
+                })
+                .then((res) => res.json())
+                .then((data) => console.log(data))
+                .catch((err) => console.log(err));
+            } else {
+                return
+            }
+            console.log(token);
             })
-            .then((res) => res.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err));
-        } else {
-            return
         }
-        console.log(token);
-    },
-    addPicture() {
+    )},
+        addPicture() {
         const selectImage = document.querySelector(".select-image")
         const inputFile = document.querySelector("#file")
         const imgArea = document.querySelector('.img-area')
         
-        selectImage.addEventListener('click', () => {
+        selectImage.addEventListener('click', (e) => {
+            e.preventDefault()
             inputFile.click();
         })
 
@@ -165,8 +172,8 @@ const page = {
         <figure draggable="true" data-draggable="item">
             <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
             <div class="icons">
-            <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
-            <button type="submit" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
+                <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
+                <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
             </div>
             <a class="edit-item" id="${work.id}">éditer</a>
         </figure>
@@ -179,14 +186,14 @@ const page = {
             `<button class="js-modal" id="add-btn">Ajouter une photo</button> 
             <a href="#" id="delete-gallery">Supprimer la galerie</a>`
             );
-            // utils.handleEventArrow();
+            
+            utils.deleteWorks()
             console.log("fin vue1");
             document.addEventListener("click", (e) => console.log(e))
             modal.querySelectorAll(".edit-item").forEach(btn => {btn.addEventListener('click', (e) => {
                 let workInd = e.target.id;
                 this.vue3(workInd);
             })})
-            modal.querySelectorAll('.deleteBtn').forEach((btn) => {btn.addEventListener('click', (e) => {e.preventDefault(); let id = e.target.id; utils.deleteWorks(id)})})
             modal.querySelector("#add-btn").addEventListener('click', () => this.vue2());
         },
         vue2: function() {
@@ -201,7 +208,7 @@ const page = {
                 <div class="img-area" data-img="">
                     <i class="fa-regular fa-image"></i>
                     <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg">
-                    <button type="button" class="select-image">+ Ajouter photo</button>
+                    <a href="" class="select-image">+ Ajouter photo</a>
                     <p>jpg, png: 4mo max</p>
                 </div>
                 <label for="add-title">Titre</label>
