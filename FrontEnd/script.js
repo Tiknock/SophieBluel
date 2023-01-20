@@ -45,11 +45,11 @@ function filterEvent() {
     const btnSort = document.querySelectorAll('.btn-Sort');
     btnSort.forEach((btn) => {
         btn.addEventListener('click', (e) => {
-        const selectedFilter = parseInt(e.target.id);
+        const filterMethod = parseInt(e.target.id);
         const filteredGalleryData = galleryData.filter(
-          (work) => work.category.id === selectedFilter
+          (work) => work.category.id === filterMethod
         );
-        if (selectedFilter == 0) {
+        if (filterMethod == 0) {
           projectsDisplay(galleryData);
         } else {
           projectsDisplay(filteredGalleryData);

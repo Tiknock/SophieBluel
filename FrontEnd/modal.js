@@ -101,6 +101,9 @@ const utils = {
                 console.log(img);
                 console.log(reader);
                 imgArea.appendChild(img)
+                document.querySelector(".select-image").style.display = "none"
+                document.querySelector(".img-area p").style.display = "none"
+                document.querySelector(".fa-image").style.display = "none"
                 imgArea.className += ' active'
                 imgArea.className += ' after'
                 imgArea.dataset.img = image.name
@@ -207,7 +210,7 @@ const page = {
             <form id="add-form">
                 <div class="img-area" data-img="">
                     <i class="fa-regular fa-image"></i>
-                    <input type="file" style="visibility:hidden" id="file" name="file" accept="image/png, image/jpeg">
+                    <input type="file" style="display:none" id="file" name="file" accept="image/png, image/jpeg">
                     <a href="" class="select-image">+ Ajouter photo</a>
                     <p>jpg, png: 4mo max</p>
                 </div>

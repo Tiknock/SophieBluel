@@ -409,26 +409,16 @@ cursor: pointer;
 	background: #E8F1F6; 
 	overflow: hidden;
 	width: 100%;
-	padding: 0 0 10px 0;
 	height: 189px;
 	margin: auto;
 }
 .img-area i {
-	height: 70%;
+	height: 50%;
     font-size: 4em;
     color: #CBD6DC;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.img-add {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	z-index: 100;
 }
 .img-area::before {
 	content: attr(data-img);
@@ -451,19 +441,17 @@ cursor: pointer;
 .img-area.active:hover::before {
 	opacity: 1;
 }
+
 .after {
 display: flex;
 align-items: center;
 justify-content: center;
-width: 129px;
-height: 163px;
 }
 .img-area img {
 	height: 163px;
 	width: 129px;
 }
 .select-image {
-	margin: auto;
 	border-radius: 50px;
 	font-family: "Work Sans";
 	font-weight: 500;
@@ -478,6 +466,9 @@ height: 163px;
 	flex-direction: column;
 	width: 70%;
 	margin: auto;
+}
+.img-area p {
+	margin: 7px 0 20px 0;
 }
 .line {
 	margin: 23px auto 10px;
