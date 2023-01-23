@@ -180,13 +180,15 @@ nav li a:hover {
 	border-radius: 60px;
 }
 .btn-Sort:hover, .active {
+	transition: 0.35 ease-in-out;
 	color: #FFFEF8;
 	background: #1D6154;
 }
 .verified {
 	color: #FFFEF8!important;
 	background: #1D6154!important;
-	}
+	border: none!important;
+}
 .gallery {
 	width: 100%;
 	display: grid;
@@ -364,7 +366,7 @@ cursor: pointer;
     font-size: 14px;
 	color: white;
 	background-color: #1D6154;
-    border: 1px solid #1D6154;
+    border: none;
     padding: 10px 50px;
 	margin : 2em auto 30px ;
 	width: auto;
@@ -480,6 +482,7 @@ justify-content: center;
 	width: 100%;
 }
 #add-picture-btn, #edit-picture-btn {
+	align-items: center;
 	font-family: 'Syne';
 	font-weight: 700;
 	margin : 2em auto 0.5em;
@@ -497,4 +500,31 @@ justify-content: center;
 .flex {
 	display: flex;
 	flex-direction: column;
+}
+
+
+
+.btn-effect {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	overflow: hidden;
+	margin: 0;
+} 
+.btn-effect::before {
+	cursor: pointer;
+	content: '';
+	position: absolute;
+	height: 200px;
+	width: 20px;
+	background: #f3f3f3;
+	box-shadow: 0 0 10px #fff;
+	filter: blur(1px);
+	opacity: 0.9;
+	top: -100px;
+	transition: 1s;
+	transform: rotate(-20deg) translate(-140px);
+}
+.btn-effect:hover::before {
+	transform: rotate(-20deg) translate(140px,70px);
 }

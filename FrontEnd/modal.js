@@ -8,10 +8,10 @@ let works = []
 
 const editBtnDisplay = () => {
     if (token) {
-        jsModal.forEach((btn) => {btn.style.visibility = "visible";})
+        jsModal.forEach((btn) => { btn.style.visibility = "visible"; })
     }
     else {
-        jsModal.forEach((btn) => {btn.style.visibility = "hidden";})
+        jsModal.forEach((btn) => { btn.style.visibility = "hidden"; })
     }
 }
 editBtnDisplay()
@@ -19,16 +19,16 @@ editBtnDisplay()
 
 async function getWorks() {
     await fetch(worksURL)
-    .then((res) => res.json())
-    .then((data) => works = data)
+        .then((res) => res.json())
+        .then((data) => works = data)
 }
 getWorks()
 
-async function getIndWorks(id) {
-    await fetch(worksURL + "/" + id)
-    .then((res) => res.json())
-    .then((data) => work = data)
-}
+// async function getIndWorks(id) {
+//     await fetch("http://localhost:5678/api/works/" + id)
+//     .then((res) => res.json())
+//     .then((data) => work = data)
+// }
 
 
 const openModal = function (e) {
@@ -56,34 +56,160 @@ const utils = {
         modal.querySelector(".content").innerHTML = content;
         modal.querySelector(".btn-container").innerHTML = btn;
     },
-    deleteWorks() {
-        modal.querySelectorAll('.deleteBtn').forEach((btn) => {btn.addEventListener('click', (e) => {
-            // Rafraichissement de la page que je ne comprends pas
+    deleteWork() {
+        modal.querySelectorAll('.deleteBtn').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                console.log("hey")
+                // Rafraichissement de la page que je ne comprends pas
+                e.preventDefault()
+                let workToDeleteId = e.target.id;
+                if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
+                    fetch(worksURL + "/" + workToDeleteId, {
+                        method: "DELETE",
+                        headers: {
+                            'Authorization': "Bearer " + token,
+                            'Content-type': 'application/json'
+                        },
+                    })
+                        .then(function (data) {
+                            fetch(worksURL)
+                                .then((res) => res.json())
+                                .then(function (data2) {
+                                    console.log(data)
+                                    modal.querySelector(".js-modal-previous").style.display = "none";
+                                    modal.querySelector(".btn-container").className += (" modal-gallery-btn");
+                                    modal.querySelector(".content").className += " modal-gallery";
+                                    modal.querySelector(".content").classList.remove("vue2");
+                                    let mapArray = data2
+                                        .map((work) =>
+                                            `
+                                <figure draggable="true" data-draggable="item">
+                                    <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
+                                    <div class="icons">
+                                        <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
+                                        <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
+                                    </div>
+                                    <a class="edit-item" id="${work.id}">éditer</a>
+                                </figure>
+                                    `
+                                        )
+                                        .join("");
+                                    utils.pageContent(
+                                        "Galerie photo",
+                                        mapArray,
+                                        `<button class="js-modal" id="add-btn">Ajouter une photo</button> 
+                                    <a href="" id="delete-gallery">Supprimer la galerie</a>`
+                                    );
+
+                                    utils.deleteWork();
+                                    utils.deleteAllWorks();
+                                    console.log("fin vue1");
+                                    document.addEventListener("click", (e) => console.log(e))
+                                    modal.querySelectorAll(".edit-item").forEach(btn => {
+                                        btn.addEventListener('click', (e) => {
+                                            let workInd = e.target.id;
+                                            this.vue3(workInd);
+                                        })
+                                    })
+                                    modal.querySelector("#add-btn").addEventListener('click', () => page.vue2());
+                                })
+                        })
+                        .catch((err) => console.log(err));
+                } else {
+                    return
+                }
+                console.log(token);
+            })
+        }
+        )
+    },
+    deleteAllWorks() {
+        modal.querySelector("#delete-gallery").addEventListener('click', (e) => {
             e.preventDefault()
-            let id = e.target.id;
-            if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
-                fetch(worksURL+"/"+id, {
-                    method: "DELETE",
-                    headers: {
-                        'Authorization': "Bearer " + token,
-                        'Content-type': 'application/json'
-                    },
-                    body: null,
-                })
-                .then((data) => console.log(data))
-                .catch((err) => console.log(err));
+            if (confirm("Désirez-vous vraiment supprimer tous les projets ?") == true) {
+                fetch(worksURL)
+                    .then((res) => res.json())
+                    .then(function (data3) {
+                        // let idArr = []
+                        for (let i = 0; i < data3.length; i++) {
+                            fetch(worksURL + "/" + data3[i].id, {
+                                method: "DELETE",
+                                headers: {
+                                    'Authorization': "Bearer " + token,
+                                    'Content-type': 'application/json'
+                                },
+                            })
+                                .then(function (data) {
+                                    fetch(worksURL)
+                                        .then((res) => res.json())
+                                        .then(function (data2) {
+                                            console.log(data)
+                                            modal.querySelector(".js-modal-previous").style.display = "none";
+                                            modal.querySelector(".btn-container").className += (" modal-gallery-btn");
+                                            modal.querySelector(".content").className += " modal-gallery";
+                                            modal.querySelector(".content").classList.remove("vue2");
+                                            let mapArray = data2
+                                                .map((work) =>
+                                                    `
+                                        <figure draggable="true" data-draggable="item">
+                                            <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
+                                            <div class="icons">
+                                                <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
+                                                <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
+                                            </div>
+                                            <a class="edit-item" id="${work.id}">éditer</a>
+                                        </figure>
+                                            `
+                                                )
+                                                .join("");
+                                            utils.pageContent(
+                                                "Galerie photo",
+                                                mapArray,
+                                                `<button class="js-modal" id="add-btn">Ajouter une photo</button> 
+                                            <a href="" id="delete-gallery">Supprimer la galerie</a>`
+                                            );
+
+                                            utils.deleteWork()
+                                            console.log("fin vue1");
+                                            document.addEventListener("click", (e) => console.log(e))
+                                            modal.querySelectorAll(".edit-item").forEach(btn => {
+                                                btn.addEventListener('click', (e) => {
+                                                    let workInd = e.target.id;
+                                                    this.vue3(workInd);
+                                                })
+                                            })
+                                            modal.querySelector("#delete-gallery").addEventListener('click', (e) => deleteAllWorks())
+                                            modal.querySelector("#add-btn").addEventListener('click', () => page.vue2());
+                                        })
+                                })
+
+                            // idArr.push(data3[i].id)
+                            // console.log(idArr)
+                        }
+                        //     let results = data3
+                        //     .map((datou) => 
+                        //     [...datou.id]
+                        // )
+                    }
+                    )
+
+
+
+                    //Regrouper les data3.id dans un tableau
+
+                    .catch((err) => console.log(err));
             } else {
                 return
             }
             console.log(token);
-            })
-        }
-    )},
-        addPicture() {
+
+        })
+    },
+    addPicture() {
         const selectImage = document.querySelector(".select-image")
         const inputFile = document.querySelector("#file")
         const imgArea = document.querySelector('.img-area')
-        
+
         selectImage.addEventListener('click', (e) => {
             e.preventDefault()
             inputFile.click();
@@ -106,7 +232,7 @@ const utils = {
                 imgArea.className += ' active'
                 imgArea.className += ' after'
                 imgArea.dataset.img = image.name
-                img.setAttribute("id","add-img")
+                img.setAttribute("id", "add-img")
             }
             reader.readAsDataURL(image)
         })
@@ -117,18 +243,21 @@ const utils = {
         const select = modal.querySelector('#add-category')
         let verifOk = false
         modal.querySelector('#add-form').addEventListener('input', (e) => {
+            verifOk = false
+            console.log(verifOk);
             // console.log(verifImg.src);
             console.log(verifTitle.value);
             console.log(select.selectedIndex);
             console.log(verifImg.value);
-            if (!verifTitle.value) {
-                modal.querySelector("#add-picture-btn").classList.remove("verified")
-                document.getElementById("erreur").innerHTML = "Veuillez ajouter un titre."
-                verifOk = false
-            }
+            console.log(verifOk);
             if (select.selectedIndex < 1) {
                 modal.querySelector("#add-picture-btn").classList.remove("verified")
                 document.getElementById("erreur").innerHTML = "Veuillez ajouter une catégorie."
+                verifOk = false
+            }
+            if (!verifTitle.value) {
+                modal.querySelector("#add-picture-btn").classList.remove("verified")
+                document.getElementById("erreur").innerHTML = "Veuillez ajouter un titre."
                 verifOk = false
             }
             if (verifImg.value == "") {
@@ -138,31 +267,36 @@ const utils = {
             } else if (verifImg.value !== "" && verifTitle.value && select.selectedIndex >= 1) {
                 document.getElementById("erreur").innerHTML = "";
                 modal.querySelector("#add-picture-btn").classList.add("verified")
+                modal.querySelector("#add-picture-btn").classList.add("btn-effect")
                 verifOk = true
             }
-        }) 
-        if (verifOk = true) {
+        })
         modal.querySelector('#add-form').addEventListener('submit', (e) => {
-                e.preventDefault();
+            console.log(verifOk);
+            e.preventDefault();
+            if (verifOk == true) {
+                alert("Votre projet a bien été ajouté !")
                 utils.addWork()
-            })
-        }
+            } else {
+                alert("Veuillez vérifier les champs requis.")
+            }
+        })
     },
     fetchCategories() {
         fetch("http://localhost:5678/api/categories")
-        .then((res) => res.json())
-        .then((data)=> {
-            const categorySelect = modal.querySelector(".category")
-        categorySelect.innerHTML += data
-        .map((category) => {
-            return `
+            .then((res) => res.json())
+            .then((data) => {
+                const categorySelect = modal.querySelector(".category")
+                categorySelect.innerHTML += data
+                    .map((category) => {
+                        return `
             <option value="${category.id}">${category.name}</option>
             `
-        })
-        .join('')
-        })
+                    })
+                    .join('')
+            })
     },
-    addWork() {  
+    addWork() {
         const file = document.querySelector("#file");
         let image = file.files[0];
         let title = document.getElementById("add-title").value;
@@ -181,32 +315,45 @@ const utils = {
             },
             body: formData
         })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            console.log(data);
-        }, function (rejectionReason) { // 3
-            console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
-            responseClone.text() // 5
-            .then(function (bodyText) {
-                console.log('Received the following instead of valid JSON:', bodyText); // 6
+            .then(function (response) {
+                responseClone = response.clone(); // 2
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data);
+                document.querySelector("#add-form").reset();
+                const imgArea = document.querySelector('.img-area')
+                const img = document.querySelector('#add-img')
+                img.remove()
+                document.querySelector(".select-image").style.display = null
+                document.querySelector(".img-area p").style.display = null
+                document.querySelector(".fa-image").style.display = null
+                imgArea.dataset.img = ""
+                imgArea.className -= ' active'
+                imgArea.className -= ' after'
+                imgArea.className += " img-area"
+            }, function (rejectionReason) { // 3
+                console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
+                responseClone.text() // 5
+                    .then(function (bodyText) {
+                        console.log('Received the following instead of valid JSON:', bodyText); // 6
+                    });
             });
-        });
     }
 }
 
 // ---Vues
 const page = {
-    vue1: function() {
+    vue1: function () {
         modal.querySelector(".js-modal-previous").style.display = "none";
         modal.querySelector(".btn-container").className += (" modal-gallery-btn");
         modal.querySelector(".content").className += " modal-gallery";
         modal.querySelector(".content").classList.remove("vue2");
+
         let mapArray = works
-        .map((work) => 
-        `
-        <figure draggable="true" data-draggable="item">
+            .map((work) =>
+                `
+        <figure draggable="true" data-draggable="item" id="fig-${work.id}">
             <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
             <div class="icons">
                 <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
@@ -216,24 +363,27 @@ const page = {
         </figure>
             `
             )
-        .join("");       
+            .join("");
         utils.pageContent(
             "Galerie photo",
             mapArray,
-            `<button class="js-modal" id="add-btn">Ajouter une photo</button> 
+            `<button class="js-modal btn-effect" id="add-btn">Ajouter une photo</button> 
             <a href="#" id="delete-gallery">Supprimer la galerie</a>`
-            );
-            
-            utils.deleteWorks()
-            console.log("fin vue1");
-            document.addEventListener("click", (e) => console.log(e))
-            modal.querySelectorAll(".edit-item").forEach(btn => {btn.addEventListener('click', (e) => {
+        );
+
+        utils.deleteWork();
+        utils.deleteAllWorks();
+        console.log("fin vue1");
+        document.addEventListener("click", (e) => console.log(e))
+        modal.querySelectorAll(".edit-item").forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 let workInd = e.target.id;
                 this.vue3(workInd);
-            })})
-            modal.querySelector("#add-btn").addEventListener('click', () => this.vue2());
-        },
-        vue2: function() {
+            })
+        })
+        modal.querySelector("#add-btn").addEventListener('click', () => this.vue2());
+    },
+    vue2: function () {
         modal.querySelector(".js-modal-previous").style.display = null;
         modal.querySelector(".content").classList.remove("modal-gallery");
         modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
@@ -258,7 +408,7 @@ const page = {
                 <button type="submit" id="add-picture-btn">Valider</button>
             </form>
             <p style="color:red" id="erreur"></p>`,
-                null
+            null
         )
         utils.fetchCategories()
         utils.addPicture()
@@ -266,22 +416,22 @@ const page = {
 
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
-        vue3: function(workInd) {
-            console.log(workInd);
-            
+    vue3: function (workInd) {
+        console.log(workInd);
+
         modal.querySelector(".js-modal-previous").style.display = null;
         modal.querySelector(".content").classList.remove("modal-gallery");
         modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
         modal.querySelector(".content").className += " vue2";
 
         let thisWork = works
-        .filter((work) => {
-            if (work.id == workInd) {
-                return work
-            }
-        })
-        .map((work) => 
-        `
+            .filter((work) => {
+                if (work.id == workInd) {
+                    return work
+                }
+            })
+            .map((work) =>
+                `
         <form id="edit-form">
             <div class="img-area after" data-img="">
                 <img class="modal-gallery-img" src=${work.imageUrl} alt="${work.title}" crossorigin="anonymous" class="modal-img">
@@ -293,19 +443,19 @@ const page = {
                 <option value="">--Choisir la catégorie--</option>
             </select>
             <span class="line"></span>
-            <button type="submit" id="edit-picture-btn">Valider</button>
+            <button class="btn-effect verified" type="submit" id="edit-picture-btn">Valider</button>
             </form>`
             )
-            // .filter((work) => {
-                
-            //     const select = modal.querySelector("#edit-category");
-            //     if (select.selectedIndex = work.category.id)
-            //     {
-            //         console.log(select.selectedIndex);
-            //         // select.selectedIndex = selected
-            //     }
-            // })
-            // getIndWorks(id) 
+        // .filter((work) => {
+
+        //     const select = modal.querySelector("#edit-category");
+        //     if (select.selectedIndex = work.category.id)
+        //     {
+        //         console.log(select.selectedIndex);
+        //         // select.selectedIndex = selected
+        //     }
+        // })
+        // getIndWorks(id) 
         // console.log(select.selectedIndex)
 
 
@@ -314,7 +464,7 @@ const page = {
             thisWork,
             null
         )
-        
+
         utils.fetchCategories()
         // modal.querySelector('#add-picture-btn').addEventListener('click', (e) => editWork())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
