@@ -264,6 +264,8 @@ const utils = {
             if (verifOk == true) {
                 alert("Votre projet a bien été ajouté !")
                 utils.addWork()
+                modal.querySelector("#add-picture-btn").classList.remove("verified")
+                verifOk = false
             } else {
                 alert("Veuillez vérifier les champs requis.")
             }
