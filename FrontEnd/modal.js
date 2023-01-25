@@ -3,11 +3,9 @@ const token = localStorage.getItem("token");
 const jsModal = document.querySelectorAll('.js-modal')
 const modal3 = document.querySelector('#modal3')
 let modal = null;
-let item;
 let works = []
 
-import { galleryData, fetchWorks, fetchCategories, projectsDisplay, filterEvent } from './script.js'
-console.log(fetchWorks);
+import { fetchWorks, projectsDisplay } from './script.js'
 
 const editBtnDisplay = () => {
     if (token) {
@@ -19,20 +17,12 @@ const editBtnDisplay = () => {
 }
 editBtnDisplay()
 
-
-async function getWorks() {
-    await fetch(worksURL)
+function getWorks() {
+    fetch(worksURL)
         .then((res) => res.json())
         .then((data) => works = data)
 }
 getWorks()
-
-// async function getIndWorks(id) {
-//     await fetch("http://localhost:5678/api/works/" + id)
-//     .then((res) => res.json())
-//     .then((data) => work = data)
-// }
-
 
 const openModal = function (e) {
     e.preventDefault();
@@ -46,9 +36,7 @@ const openModal = function (e) {
     modal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
     if (modal == modal3) {
         page.vue1()
-        // getWorks()
     }
-    // getWorks()
 }
 
 // Modale avec fonctionnalités et vues
@@ -85,7 +73,7 @@ const utils = {
                                     let mapArray = data2
                                         .map((work) =>
                                             `
-                                <figure draggable="true" data-draggable="item" id="fig-${work.id}">
+                                <figure id="fig-${work.id}">
                                     <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
                                     <div class="icons">
                                         <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
@@ -158,7 +146,7 @@ const utils = {
                                         let mapArray = data2
                                         .map((work) =>
                                         `
-                                        <figure draggable="true" data-draggable="item" id="fig-${work.id}">
+                                        <figure id="fig-${work.id}">
                                         <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
                                         <div class="icons">
                                         <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
@@ -332,7 +320,9 @@ const utils = {
                 imgArea.className += " img-area"
                 // fetchWorks()
             })
-            .then(function () {
+            .then(function (data) {
+                getWorks()
+                page.vue1
                 fetchWorks()
                 projectsDisplay()
             })
@@ -346,11 +336,10 @@ const page = {
         modal.querySelector(".btn-container").className += (" modal-gallery-btn");
         modal.querySelector(".content").className += " modal-gallery";
         modal.querySelector(".content").classList.remove("vue2");
-
         let mapArray = works
             .map((work) =>
                 `
-        <figure draggable="true" data-draggable="item" id="fig-${work.id}">
+        <figure id="fig-${work.id}">
             <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
             <div class="icons">
                 <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
@@ -412,7 +401,9 @@ const page = {
         utils.addPicture()
         utils.verifyForm()
 
-        modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
+        modal.querySelector(".js-modal-previous").addEventListener('click', () => {
+            this.vue1()
+        })
     },
     vue3: function (workInd) {
         console.log(workInd);
@@ -422,9 +413,12 @@ const page = {
         modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
         modal.querySelector(".content").className += " vue2";
 
+
+
         let thisWork = works
             .filter((work) => {
                 if (work.id == workInd) {
+                    utils.fetchCategories()
                     return work
                 }
             })
@@ -444,18 +438,6 @@ const page = {
             <button class="btn-effect verified" type="submit" id="edit-picture-btn">Valider</button>
             </form>`
             )
-        // .filter((work) => {
-
-        //     const select = modal.querySelector("#edit-category");
-        //     if (select.selectedIndex = work.category.id)
-        //     {
-        //         console.log(select.selectedIndex);
-        //         // select.selectedIndex = selected
-        //     }
-        // })
-        // getIndWorks(id) 
-        // console.log(select.selectedIndex)
-
 
         utils.pageContent(
             "Editer photo",
@@ -463,8 +445,6 @@ const page = {
             null
         )
 
-        utils.fetchCategories()
-        // modal.querySelector('#add-picture-btn').addEventListener('click', (e) => editWork())
         modal.querySelector(".js-modal-previous").addEventListener('click', () => this.vue1())
     },
 }

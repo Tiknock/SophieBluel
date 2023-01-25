@@ -49,7 +49,7 @@ function filterEvent() {
       btn.addEventListener('click', (e) => {
         btnSort.forEach((btn) => btn.classList.remove("active"))
         btn.classList.add("active")
-        const filterMethod = parseInt(e.target.id.slice(4)        );
+        const filterMethod = parseInt(e.target.id.slice(4));
         const filteredGalleryData = galleryData.filter(
           (work) => work.category.id === filterMethod
         );
@@ -65,4 +65,4 @@ function filterEvent() {
 fetchCategories();
 fetchWorks();
 
-export { galleryData, fetchWorks, fetchCategories, projectsDisplay, filterEvent }
+export { fetchWorks, projectsDisplay }
