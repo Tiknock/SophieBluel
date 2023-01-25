@@ -6,6 +6,9 @@ let modal = null;
 let item;
 let works = []
 
+import { galleryData, fetchWorks, fetchCategories, projectsDisplay, filterEvent } from './script.js'
+console.log(fetchWorks);
+
 const editBtnDisplay = () => {
     if (token) {
         jsModal.forEach((btn) => { btn.style.visibility = "visible"; })
@@ -62,7 +65,7 @@ const utils = {
                 console.log("hey")
                 // Rafraichissement de la page que je ne comprends pas
                 e.preventDefault()
-                let workToDeleteId = e.target.id;
+                let workToDeleteId = e.target.id.slice(4);
                 if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
                     fetch(worksURL + "/" + workToDeleteId, {
                         method: "DELETE",
@@ -75,7 +78,6 @@ const utils = {
                             fetch(worksURL)
                                 .then((res) => res.json())
                                 .then(function (data2) {
-                                    console.log(data)
                                     modal.querySelector(".js-modal-previous").style.display = "none";
                                     modal.querySelector(".btn-container").className += (" modal-gallery-btn");
                                     modal.querySelector(".content").className += " modal-gallery";
@@ -83,13 +85,13 @@ const utils = {
                                     let mapArray = data2
                                         .map((work) =>
                                             `
-                                <figure draggable="true" data-draggable="item">
+                                <figure draggable="true" data-draggable="item" id="fig-${work.id}">
                                     <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
                                     <div class="icons">
                                         <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
-                                        <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
+                                        <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="dlt-${work.id}"></i></button>
                                     </div>
-                                    <a class="edit-item" id="${work.id}">éditer</a>
+                                    <a class="edit-item" id="edit-${work.id}">éditer</a>
                                 </figure>
                                     `
                                         )
@@ -107,12 +109,17 @@ const utils = {
                                     document.addEventListener("click", (e) => console.log(e))
                                     modal.querySelectorAll(".edit-item").forEach(btn => {
                                         btn.addEventListener('click', (e) => {
-                                            let workInd = e.target.id;
+                                            let workInd = e.target.id.slice(5);
                                             this.vue3(workInd);
                                         })
                                     })
+                                    // fetchWorks()
                                     modal.querySelector("#add-btn").addEventListener('click', () => page.vue2());
                                 })
+                        })
+                        .then(function (data) {
+                            fetchWorks()
+                            projectsDisplay()
                         })
                         .catch((err) => console.log(err));
                 } else {
@@ -139,64 +146,56 @@ const utils = {
                                     'Content-type': 'application/json'
                                 },
                             })
-                                .then(function (data) {
-                                    fetch(worksURL)
-                                        .then((res) => res.json())
-                                        .then(function (data2) {
-                                            console.log(data)
-                                            modal.querySelector(".js-modal-previous").style.display = "none";
-                                            modal.querySelector(".btn-container").className += (" modal-gallery-btn");
-                                            modal.querySelector(".content").className += " modal-gallery";
-                                            modal.querySelector(".content").classList.remove("vue2");
-                                            let mapArray = data2
-                                                .map((work) =>
-                                                    `
-                                        <figure draggable="true" data-draggable="item">
-                                            <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
-                                            <div class="icons">
-                                                <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
-                                                <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
-                                            </div>
-                                            <a class="edit-item" id="${work.id}">éditer</a>
+                            .then(function (data) {
+                                fetch(worksURL)
+                                    .then((res) => res.json())
+                                    .then(function (data2) {
+                                        console.log(data)
+                                        modal.querySelector(".js-modal-previous").style.display = "none";
+                                        modal.querySelector(".btn-container").className += (" modal-gallery-btn");
+                                        modal.querySelector(".content").className += " modal-gallery";
+                                        modal.querySelector(".content").classList.remove("vue2");
+                                        let mapArray = data2
+                                        .map((work) =>
+                                        `
+                                        <figure draggable="true" data-draggable="item" id="fig-${work.id}">
+                                        <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
+                                        <div class="icons">
+                                        <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
+                                        <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="dlt-${work.id}"></i></button>
+                                        </div>
+                                        <a class="edit-item" id="edit-${work.id}">éditer</a>
                                         </figure>
-                                            `
-                                                )
-                                                .join("");
-                                            utils.pageContent(
-                                                "Galerie photo",
-                                                mapArray,
-                                                `<button class="js-modal" id="add-btn">Ajouter une photo</button> 
-                                            <a href="" id="delete-gallery">Supprimer la galerie</a>`
-                                            );
-
-                                            utils.deleteWork()
-                                            console.log("fin vue1");
-                                            document.addEventListener("click", (e) => console.log(e))
-                                            modal.querySelectorAll(".edit-item").forEach(btn => {
-                                                btn.addEventListener('click', (e) => {
-                                                    let workInd = e.target.id;
-                                                    this.vue3(workInd);
-                                                })
+                                        `
+                                        )
+                                        .join("");
+                                        utils.pageContent(
+                                        "Galerie photo",
+                                        mapArray,
+                                        `<button class="js-modal" id="add-btn">Ajouter une photo</button> 
+                                        <a href="" id="delete-gallery">Supprimer la galerie</a>`
+                                        );
+                                        
+                                        utils.deleteWork()
+                                        console.log("fin vue1");
+                                        document.addEventListener("click", (e) => console.log(e))
+                                        modal.querySelectorAll(".edit-item").forEach(btn => {
+                                            btn.addEventListener('click', (e) => {
+                                                let workInd = e.target.id.slice(5);
+                                                this.vue3(workInd);
                                             })
-                                            modal.querySelector("#delete-gallery").addEventListener('click', (e) => deleteAllWorks())
-                                            modal.querySelector("#add-btn").addEventListener('click', () => page.vue2());
                                         })
-                                })
-
-                            // idArr.push(data3[i].id)
-                            // console.log(idArr)
+                                        modal.querySelector("#delete-gallery").addEventListener('click', (e) => deleteAllWorks())
+                                        modal.querySelector("#add-btn").addEventListener('click', () => page.vue2());
+                                    })
+                            })
                         }
-                        //     let results = data3
-                        //     .map((datou) => 
-                        //     [...datou.id]
-                        // )
-                    }
-                    )
-
-
-
-                    //Regrouper les data3.id dans un tableau
-
+                        // fetchWorks()
+                    })
+                    .then(function (data) {
+                        fetchWorks()
+                        projectsDisplay()
+                    })
                     .catch((err) => console.log(err));
             } else {
                 return
@@ -316,7 +315,6 @@ const utils = {
             body: formData
         })
             .then(function (response) {
-                responseClone = response.clone(); // 2
                 return response.json();
             })
             .then(function (data) {
@@ -332,13 +330,12 @@ const utils = {
                 imgArea.className -= ' active'
                 imgArea.className -= ' after'
                 imgArea.className += " img-area"
-            }, function (rejectionReason) { // 3
-                console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
-                responseClone.text() // 5
-                    .then(function (bodyText) {
-                        console.log('Received the following instead of valid JSON:', bodyText); // 6
-                    });
-            });
+                // fetchWorks()
+            })
+            .then(function () {
+                fetchWorks()
+                projectsDisplay()
+            })
     }
 }
 
@@ -357,9 +354,9 @@ const page = {
             <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
             <div class="icons">
                 <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
-                <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="${work.id}"></i></button>
+                <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="dlt-${work.id}"></i></button>
             </div>
-            <a class="edit-item" id="${work.id}">éditer</a>
+            <a class="edit-item" id="edit-${work.id}">éditer</a>
         </figure>
             `
             )
@@ -377,7 +374,8 @@ const page = {
         document.addEventListener("click", (e) => console.log(e))
         modal.querySelectorAll(".edit-item").forEach(btn => {
             btn.addEventListener('click', (e) => {
-                let workInd = e.target.id;
+                let workInd = e.target.id.slice(5);
+                // console.log(workInd);
                 this.vue3(workInd);
             })
         })
@@ -475,13 +473,15 @@ const closeModal = function (e) {
     // console.log("closeModal");
     if (modal === null) return
     e.preventDefault();
-    modal.style.display = "none";
+    window.setTimeout(function () {
+        modal.style.display = "none";
+        modal = null
+    }, 500)
     modal.setAttribute('aria-hidden', 'true')
     modal.removeAttribute('aria-modal')
     modal.removeEventListener('click', closeModal)
     modal.querySelector('.js-modal-close').removeEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
-    modal = null
 }
 
 const stopPropagation = function (e) {
