@@ -29,7 +29,6 @@ const openModal = function (e) {
     const target = document.querySelector(e.target.getAttribute('href'));
     target.style.display = null;
     target.removeAttribute('aria-hidden')
-    target.setAttribute('aria-modal', "true")
     modal = target
     modal.addEventListener('click', closeModal)
     modal.querySelector('.js-modal-close').addEventListener('click', closeModal)
@@ -43,7 +42,7 @@ const openModal = function (e) {
 // ---Fonctionnalités
 const utils = {
     pageContent(title, content, btn) {
-        modal.querySelector("h1").innerHTML = title;
+        modal.querySelector(".titlemodal").innerHTML = title;
         modal.querySelector(".content").innerHTML = content;
         modal.querySelector(".btn-container").innerHTML = btn;
     },
@@ -460,7 +459,6 @@ const closeModal = function (e) {
         modal = null
     }, 500)
     modal.setAttribute('aria-hidden', 'true')
-    modal.removeAttribute('aria-modal')
     modal.removeEventListener('click', closeModal)
     modal.querySelector('.js-modal-close').removeEventListener('click', closeModal)
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
