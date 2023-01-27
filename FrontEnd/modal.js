@@ -1,13 +1,12 @@
 const worksURL = "http://localhost:5678/api/works";
 const token = localStorage.getItem("token");
-const jsModal = document.querySelectorAll('.js-modal')
-const modal3 = document.querySelector('#modal3')
 let modal = null;
 let works = []
 
 import { fetchWorks, projectsDisplay } from './script.js'
 
 const editBtnDisplay = () => {
+const jsModal = document.querySelectorAll('.js-modal')
     if (token) {
         jsModal.forEach((btn) => { btn.style.visibility = "visible"; })
     }
@@ -26,6 +25,7 @@ getWorks()
 
 const openModal = function (e) {
     e.preventDefault();
+    const modal3 = document.querySelector('#modal3')
     const target = document.querySelector(e.target.getAttribute('href'));
     target.style.display = null;
     target.removeAttribute('aria-hidden')
@@ -147,10 +147,10 @@ const utils = {
                                         .map((work) =>
                                         `
                                         <figure id="fig-${work.id}">
-                                        <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
+                                            <img class="modal-gallery-img" src=${work.imageUrl} alt=${work.title} crossorigin="anonymous" class="modal-img">
                                         <div class="icons">
-                                        <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
-                                        <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="dlt-${work.id}"></i></button>
+                                            <button class="moveBtn"><i class="fa-solid fa-up-down-left-right"></i></button>
+                                            <button type="button" class="deleteBtn"><i class="fa-solid fa-trash-can" id="dlt-${work.id}"></i></button>
                                         </div>
                                         <a class="edit-item" id="edit-${work.id}">éditer</a>
                                         </figure>
@@ -262,7 +262,6 @@ const utils = {
             console.log(verifOk);
             e.preventDefault();
             if (verifOk == true) {
-                alert("Votre projet a bien été ajouté !")
                 utils.addWork()
                 modal.querySelector("#add-picture-btn").classList.remove("verified")
                 verifOk = false
@@ -305,6 +304,7 @@ const utils = {
             body: formData
         })
             .then(function (response) {
+                alert("Votre projet a bien été ajouté !")
                 return response.json();
             })
             .then(function (data) {

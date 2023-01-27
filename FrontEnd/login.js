@@ -1,6 +1,4 @@
 const loginURL = "http://localhost:5678/api/users/login";
-const form = document.getElementById("login-form");
-const loginBtn = document.getElementById('login-btn');
 
 function getUserLog() {
     let email = document.getElementById("email").value;
@@ -15,7 +13,7 @@ function showErrorMsg() {
     alert("Erreur dans l'identifiant ou le mot de passe");
 }
 
-loginBtn.addEventListener('click', function(e) {
+document.getElementById('login-btn').addEventListener('click', function(e) {
     e.preventDefault();
     let user = getUserLog();
     fetch(loginURL, {
