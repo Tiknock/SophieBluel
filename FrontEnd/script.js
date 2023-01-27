@@ -23,6 +23,7 @@ async function fetchWorks() {
     .then((data) => projectsDisplay(data))
     .then(filterEvent)
 }  
+
 function projectsDisplay(data) {
     const gallery = document.querySelector(".gallery")
     gallery.innerHTML = "";

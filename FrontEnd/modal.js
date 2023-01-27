@@ -49,8 +49,6 @@ const utils = {
     deleteWork() {
         modal.querySelectorAll('.deleteBtn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
-                console.log("hey")
-                // Rafraichissement de la page que je ne comprends pas
                 e.preventDefault()
                 let workToDeleteId = e.target.id.slice(4);
                 if (confirm("Désirez-vous vraiment supprimer ce projet ?") == true) {
@@ -112,7 +110,6 @@ const utils = {
                 } else {
                     return
                 }
-                console.log(token);
             })
         }
         )
@@ -124,7 +121,6 @@ const utils = {
                 fetch(worksURL)
                     .then((res) => res.json())
                     .then(function (data3) {
-                        // let idArr = []
                         for (let i = 0; i < data3.length; i++) {
                             fetch(worksURL + "/" + data3[i].id, {
                                 method: "DELETE",
@@ -231,7 +227,6 @@ const utils = {
         modal.querySelector('#add-form').addEventListener('input', (e) => {
             verifOk = false
             console.log(verifOk);
-            // console.log(verifImg.src);
             console.log(verifTitle.value);
             console.log(select.selectedIndex);
             console.log(verifImg.value);
@@ -298,7 +293,6 @@ const utils = {
             headers: {
                 'Accept': 'application/json',
                 'Authorization': "Bearer " + token,
-                // 'Content-type': 'multipart/form-data'
             },
             body: formData
         })
@@ -319,7 +313,6 @@ const utils = {
                 imgArea.className -= ' active'
                 imgArea.className -= ' after'
                 imgArea.className += " img-area"
-                // fetchWorks()
             })
             .then(function (data) {
                 getWorks()
@@ -365,7 +358,6 @@ const page = {
         modal.querySelectorAll(".edit-item").forEach(btn => {
             btn.addEventListener('click', (e) => {
                 let workInd = e.target.id.slice(5);
-                // console.log(workInd);
                 this.vue3(workInd);
             })
         })
