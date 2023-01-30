@@ -166,13 +166,14 @@ nav li a:hover {
 }
 .filter-container {
 	margin: 50px auto;
-	width: 50%;
+	width: 55%;
 	justify-content: space-around;
 	display: flex;
 }
 .btn-Sort {
 	font-family: 'Syne';
 	font-size: 16px;
+	padding: 9px 20px;
 	color:#1D6154;
 	font-weight: 700;
 	background: #FFFEF8;
@@ -272,6 +273,7 @@ footer nav ul {
 /* MODALE */
 
 .modal {
+	z-index: 2;
     position: fixed;
     display: flex;
     align-items: center;
