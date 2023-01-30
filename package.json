@@ -1,0 +1,21 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "login.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prefix": "postcss ./assets/style.css --use autoprefixer -d ./assets/prefixed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tiknock/SophieBluel.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "browserslist": "last 4 versions",
+  "bugs": {
+    "url": "https://github.com/Tiknock/SophieBluel/issues"
+  },
+  "homepage": "https://github.com/Tiknock/SophieBluel#readme"
+}
