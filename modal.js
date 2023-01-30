@@ -90,8 +90,6 @@ const utils = {
 
                                     utils.deleteWork();
                                     utils.deleteAllWorks();
-                                    console.log("fin vue1");
-                                    document.addEventListener("click", (e) => console.log(e))
                                     modal.querySelectorAll(".edit-item").forEach(btn => {
                                         btn.addEventListener('click', (e) => {
                                             let workInd = e.target.id.slice(5);
@@ -158,8 +156,6 @@ const utils = {
                                         );
                                         
                                         utils.deleteWork()
-                                        console.log("fin vue1");
-                                        document.addEventListener("click", (e) => console.log(e))
                                         modal.querySelectorAll(".edit-item").forEach(btn => {
                                             btn.addEventListener('click', (e) => {
                                                 let workInd = e.target.id.slice(5);
@@ -196,14 +192,11 @@ const utils = {
 
         inputFile.addEventListener('change', function () {
             const image = this.files[0]
-            console.log(image);
             const reader = new FileReader()
             reader.onload = function () {
                 const imgUrl = reader.result;
                 let img = document.createElement('img');
                 img.src = imgUrl;
-                console.log(img);
-                console.log(reader);
                 imgArea.appendChild(img)
                 document.querySelector(".select-image").style.display = "none"
                 document.querySelector(".img-area p").style.display = "none"
@@ -344,8 +337,6 @@ const page = {
 
         utils.deleteWork();
         utils.deleteAllWorks();
-        console.log("fin vue1");
-        document.addEventListener("click", (e) => console.log(e))
         modal.querySelectorAll(".edit-item").forEach(btn => {
             btn.addEventListener('click', (e) => {
                 let workInd = e.target.id.slice(5);
@@ -390,8 +381,6 @@ const page = {
         })
     },
     vue3: function (workInd) {
-        console.log(workInd);
-
         modal.querySelector(".js-modal-previous").style.display = null;
         modal.querySelector(".content").classList.remove("modal-gallery");
         modal.querySelector(".btn-container").classList.remove("modal-gallery-btn");
@@ -434,7 +423,6 @@ const page = {
 }
 
 const closeModal = function (e) {
-    // console.log("closeModal");
     if (modal === null) return
     e.preventDefault();
     window.setTimeout(function () {
@@ -453,9 +441,4 @@ const stopPropagation = function (e) {
 
 document.querySelectorAll('.js-modal').forEach(a => {
     a.addEventListener('click', openModal)
-})
-
-
-document.addEventListener('click', (e) => {
-    console.log(e.target);
 })
