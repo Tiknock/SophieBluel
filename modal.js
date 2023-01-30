@@ -9,9 +9,21 @@ const editBtnDisplay = () => {
 const jsModal = document.querySelectorAll('.js-modal')
     if (token) {
         jsModal.forEach((btn) => { btn.style.visibility = "visible"; })
+        document.querySelector("#banner").style.display = null
+        document.querySelector("#login").style.display = "none"
+        document.querySelector("#logout").style.display = null
+        document.querySelector("header").style.margin = "100px auto"
+        document.querySelector("#logout").addEventListener('click', (e) => {
+            localStorage.removeItem('token');
+            location.href = "index.html";
+        })
     }
     else {
+        document.querySelector("#login").style.display = null
+        document.querySelector("#logout").style.display = "none"
         jsModal.forEach((btn) => { btn.style.visibility = "hidden"; })
+        document.querySelector("#banner").style.display = "none"
+        document.querySelector("header").style.margin = "50px auto"
     }
 }
 editBtnDisplay()

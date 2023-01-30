@@ -64,10 +64,10 @@ body {
 header {
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 50px 0;
 }
 section {
-	margin: 50px 0
+	margin: 50px 0;
 }
 
 h1{
@@ -104,11 +104,37 @@ h2{
 .js-modal i {
 	margin-right: 8px;
 }
+#banner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 60px;
+	background-color: #000;
+	margin: 0 auto;
+}
+#banner p {
+	margin: auto 10px;
+	color: #FFF;
+	margin-right:  0;
+}
+#banner p i {
+	margin-right: 8px;
+}
+#banner button {
+	margin: auto 10px;
+	padding: 11px 23px;
+	background-color: #FFF;
+	color: #000;
+	border-radius: 60px;
+}
 nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
-
 }
 nav li {
 	padding: 0 10px;
