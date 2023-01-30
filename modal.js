@@ -98,7 +98,6 @@ const utils = {
                                             this.vue3(workInd);
                                         })
                                     })
-                                    // fetchWorks()
                                     modal.querySelector("#add-btn").addEventListener('click', () => page.vue2());
                                 })
                         })
@@ -111,8 +110,7 @@ const utils = {
                     return
                 }
             })
-        }
-        )
+        })
     },
     deleteAllWorks() {
         modal.querySelector("#delete-gallery").addEventListener('click', (e) => {
@@ -173,7 +171,6 @@ const utils = {
                                     })
                             })
                         }
-                        // fetchWorks()
                     })
                     .then(function (data) {
                         fetchWorks()
@@ -226,11 +223,6 @@ const utils = {
         let verifOk = false
         modal.querySelector('#add-form').addEventListener('input', (e) => {
             verifOk = false
-            console.log(verifOk);
-            console.log(verifTitle.value);
-            console.log(select.selectedIndex);
-            console.log(verifImg.value);
-            console.log(verifOk);
             if (select.selectedIndex < 1) {
                 modal.querySelector("#add-picture-btn").classList.remove("verified")
                 document.getElementById("erreur").innerHTML = "Veuillez ajouter une catégorie."
@@ -253,7 +245,6 @@ const utils = {
             }
         })
         modal.querySelector('#add-form').addEventListener('submit', (e) => {
-            console.log(verifOk);
             e.preventDefault();
             if (verifOk == true) {
                 utils.addWork()
